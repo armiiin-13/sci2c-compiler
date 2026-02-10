@@ -16,7 +16,7 @@ public class SciLanguageParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		VOWEL=1, OTHER=2;
+		IDENT=1, NUM_INT_CONST=2, NUM_REAL_CONST=3, STRING_CONST=4, COMMENTARY=5;
 	public static final int
 		RULE_axiom = 0;
 	private static String[] makeRuleNames() {
@@ -33,7 +33,7 @@ public class SciLanguageParser extends Parser {
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "VOWEL", "OTHER"
+			null, "IDENT", "NUM_INT_CONST", "NUM_REAL_CONST", "STRING_CONST", "COMMENTARY"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -90,13 +90,21 @@ public class SciLanguageParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class AxiomContext extends ParserRuleContext {
 		public TerminalNode EOF() { return getToken(SciLanguageParser.EOF, 0); }
-		public List<TerminalNode> VOWEL() { return getTokens(SciLanguageParser.VOWEL); }
-		public TerminalNode VOWEL(int i) {
-			return getToken(SciLanguageParser.VOWEL, i);
+		public List<TerminalNode> IDENT() { return getTokens(SciLanguageParser.IDENT); }
+		public TerminalNode IDENT(int i) {
+			return getToken(SciLanguageParser.IDENT, i);
 		}
-		public List<TerminalNode> OTHER() { return getTokens(SciLanguageParser.OTHER); }
-		public TerminalNode OTHER(int i) {
-			return getToken(SciLanguageParser.OTHER, i);
+		public List<TerminalNode> NUM_INT_CONST() { return getTokens(SciLanguageParser.NUM_INT_CONST); }
+		public TerminalNode NUM_INT_CONST(int i) {
+			return getToken(SciLanguageParser.NUM_INT_CONST, i);
+		}
+		public List<TerminalNode> NUM_REAL_CONST() { return getTokens(SciLanguageParser.NUM_REAL_CONST); }
+		public TerminalNode NUM_REAL_CONST(int i) {
+			return getToken(SciLanguageParser.NUM_REAL_CONST, i);
+		}
+		public List<TerminalNode> COMMENTARY() { return getTokens(SciLanguageParser.COMMENTARY); }
+		public TerminalNode COMMENTARY(int i) {
+			return getToken(SciLanguageParser.COMMENTARY, i);
 		}
 		public AxiomContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -127,12 +135,12 @@ public class SciLanguageParser extends Parser {
 			setState(5);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==VOWEL || _la==OTHER) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 46L) != 0)) {
 				{
 				{
 				setState(2);
 				_la = _input.LA(1);
-				if ( !(_la==VOWEL || _la==OTHER) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 46L) != 0)) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -162,14 +170,14 @@ public class SciLanguageParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0002\u000b\u0002\u0000\u0007\u0000\u0001\u0000\u0005\u0000"+
+		"\u0004\u0001\u0005\u000b\u0002\u0000\u0007\u0000\u0001\u0000\u0005\u0000"+
 		"\u0004\b\u0000\n\u0000\f\u0000\u0007\t\u0000\u0001\u0000\u0001\u0000\u0001"+
-		"\u0000\u0000\u0000\u0001\u0000\u0000\u0001\u0001\u0000\u0001\u0002\n\u0000"+
-		"\u0005\u0001\u0000\u0000\u0000\u0002\u0004\u0007\u0000\u0000\u0000\u0003"+
-		"\u0002\u0001\u0000\u0000\u0000\u0004\u0007\u0001\u0000\u0000\u0000\u0005"+
-		"\u0003\u0001\u0000\u0000\u0000\u0005\u0006\u0001\u0000\u0000\u0000\u0006"+
-		"\b\u0001\u0000\u0000\u0000\u0007\u0005\u0001\u0000\u0000\u0000\b\t\u0005"+
-		"\u0000\u0000\u0001\t\u0001\u0001\u0000\u0000\u0000\u0001\u0005";
+		"\u0000\u0000\u0000\u0001\u0000\u0000\u0001\u0002\u0000\u0001\u0003\u0005"+
+		"\u0005\n\u0000\u0005\u0001\u0000\u0000\u0000\u0002\u0004\u0007\u0000\u0000"+
+		"\u0000\u0003\u0002\u0001\u0000\u0000\u0000\u0004\u0007\u0001\u0000\u0000"+
+		"\u0000\u0005\u0003\u0001\u0000\u0000\u0000\u0005\u0006\u0001\u0000\u0000"+
+		"\u0000\u0006\b\u0001\u0000\u0000\u0000\u0007\u0005\u0001\u0000\u0000\u0000"+
+		"\b\t\u0005\u0000\u0000\u0001\t\u0001\u0001\u0000\u0000\u0000\u0001\u0005";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
