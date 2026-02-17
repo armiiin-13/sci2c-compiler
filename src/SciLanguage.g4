@@ -1,11 +1,12 @@
 grammar SciLanguage;
 
-axiom : (IDENT | NUM_INT_CONST | NUM_REAL_CONST | COMMENTARY)* EOF;
+axiom : (IDENT | NUM_INT_CONST | NUM_REAL_CONST | COMMENTARY | STRING_CONST)* EOF;
 
 // ------------ KEYWORDS TOKENS ------------
 
 
 // ------------ GENERAL TOKENS ------------
+// TODO: remove all BNF Ext notation
 IDENT : LETTER (LETTER | DIGIT | '_')*;
 NUM_INT_CONST : SIGN DIGIT+;
 NUM_REAL_CONST : SIGN DIGIT+ '.' DIGIT+
