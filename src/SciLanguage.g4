@@ -1,9 +1,35 @@
 grammar SciLanguage;
 
-axiom : (IDENT | NUM_INT_CONST | NUM_REAL_CONST | COMMENTARY)* EOF;
+prg : 'PROGRAM' IDENT ';' dcllist cabecera sentlist 'END' ;
 
 // ------------ KEYWORDS TOKENS ------------
 
+dcllist : dcl dcllist | ;
+cabecera : ;
+cablist : ;
+decsubprog : ;
+sentlist : ;
+
+dcl : tipo dcl2 ;
+dcl2 : defcte | defvar ;
+defcte : ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';' ;
+ctelist : ',' IDENT '=' simpvalue ctelist | ;
+simpvalue : NUM_INT_CONST | NUM_REAL_CONST | STRING_CONST ;
+defvar : '::' varlist ';' ;
+tipo : 'INTEGER' | 'REAL' | 'CHARACTER' charlength ;
+charlength : '(' NUM_INIT_CONST ')' | ;
+varlist : IDENT init varlist2 ;
+varlist2 : ',' IDENT init varlist2 | ;
+init : '=' simpvalue | ;
+
+decproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist 'END' 'SUBROUTINE' IDENT ;
+formal_paramlist : '(' nomparamlist ')' | ;
+nomparamlist : IDENT nomparamlist2 ;
+nomparamlist2 : ',' IDENT nomparamlist2 | ;
+dec_s_paramlist : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';' dec_s_paramlist | ;
+tipoparam : 'IN' | 'OUT' | 'INOUT' ;
+decfun : 'FUNCTION' IDENT '(' nomparamlist ')' tipo '::' IDENT ';' dec_f_paramlist 'END' 'FUNCTION' IDENT ;
+dec_f_paramlist : tipo ',' 'INTENT' '(' 'IN' ')' IDENT ';' dec_f_paramlist | ;
 
 // ------------ GENERAL TOKENS ------------
 IDENT : LETTER (LETTER | DIGIT | '_')*;
