@@ -8,7 +8,8 @@ dcllist : dcl dcllist | ;
 cabecera : ;
 cablist : ;
 decsubprog : ;
-sentlist : ;
+sentlist : sent sentlist2 ;
+sentlist2 : sent sentlist2 | ;
 
 dcl : tipo dcl2 ;
 dcl2 : defcte | defvar ;
@@ -22,6 +23,10 @@ varlist : IDENT init varlist2 ;
 varlist2 : ',' IDENT init varlist2 | ;
 init : '=' simpvalue | ;
 
+/*
+    "PARTE DOS" (cabecera) MAL HECHA
+    Sustituir por la parte de cabecera bien hecha
+
 decproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist 'END' 'SUBROUTINE' IDENT ;
 formal_paramlist : '(' nomparamlist ')' | ;
 nomparamlist : IDENT nomparamlist2 ;
@@ -30,6 +35,19 @@ dec_s_paramlist : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';' dec_s_paramlist 
 tipoparam : 'IN' | 'OUT' | 'INOUT' ;
 decfun : 'FUNCTION' IDENT '(' nomparamlist ')' tipo '::' IDENT ';' dec_f_paramlist 'END' 'FUNCTION' IDENT ;
 dec_f_paramlist : tipo ',' 'INTENT' '(' 'IN' ')' IDENT ';' dec_f_paramlist | ;
+*/
+
+sent : IDENT '=' exp ';' | proc_call ';' ;
+exp : factor exp2 ;
+exp2 : op factor exp2 | ;
+op : oparit ;
+oparit : '+' |'-' | '*' | '/' ;
+factor : simpvalue | '(' exp ')' | IDENT factor2 ;
+factor2 : '(' exp explist ')' | ;
+explist : ',' exp explist | ;
+proc_call : 'CALL' IDENT subpparamlist ;
+subpparamlist : '(' exp explist ')' | ;
+
 
 // ------------ GENERAL TOKENS ------------
 IDENT : LETTER (LETTER | DIGIT | '_')*;
