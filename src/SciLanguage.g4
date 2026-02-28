@@ -28,9 +28,9 @@ nomparamlist_init : IDENT nomparamlist;
 nomparamlist : ',' nomparamlist_init | ;
 dec_s_paramlist : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';' dec_s_paramlist | ;
 tipoparam : 'IN' | 'OUT' | 'INOUT';
-decfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_fd_paramlist 'END' 'FUNCTION' IDENT;
-dec_fd_paramlist : tipo ',' 'INTENT' '(' dec_paramlist;
-dec_paramlist : 'IN' ')' IDENT ';' dec_fd_paramlist | tipoparam ')' IDENT ';'; //LL(2)
+decfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_f_paramlist 'END' 'FUNCTION' IDENT;
+dec_f_paramlist : tipo ',' 'INTENT' '(' dec_paramlist;
+dec_paramlist : 'IN' ')' IDENT ';' dec_f_paramlist | tipoparam ')' IDENT ';'; //LL(2)
 
 sent : IDENT '=' exp ';' | proc_call ';' ;
 exp : factor exp2 ;
@@ -42,6 +42,10 @@ factor2 : '(' exp explist ')' | ;
 explist : ',' exp explist | ;
 proc_call : 'CALL' IDENT subpparamlist ;
 subpparamlist : '(' exp explist ')' | ;
+
+subproglist : codproc subproglist | codfun subproglist | ;
+codproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist dcllist sentlist 'END' 'SUBROUTINE' IDENT ;
+codfun : 'FUNCTION' IDENT '(' nomparamlist ')' tipo '::' IDENT ';' dec_f_paramlist dcllist sentlist IDENT '=' exp ';' 'END' 'FUNCTION' IDENT ;
 
 // ------------ KEYWORDS TOKENS ------------
 
