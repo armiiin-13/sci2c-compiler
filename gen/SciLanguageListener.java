@@ -257,15 +257,15 @@ public interface SciLanguageListener extends ParseTreeListener {
 	 */
 	void exitDecfun(SciLanguageParser.DecfunContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SciLanguageParser#dec_fd_paramlist}.
+	 * Enter a parse tree produced by {@link SciLanguageParser#dec_f_paramlist}.
 	 * @param ctx the parse tree
 	 */
-	void enterDec_fd_paramlist(SciLanguageParser.Dec_fd_paramlistContext ctx);
+	void enterDec_f_paramlist(SciLanguageParser.Dec_f_paramlistContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SciLanguageParser#dec_fd_paramlist}.
+	 * Exit a parse tree produced by {@link SciLanguageParser#dec_f_paramlist}.
 	 * @param ctx the parse tree
 	 */
-	void exitDec_fd_paramlist(SciLanguageParser.Dec_fd_paramlistContext ctx);
+	void exitDec_f_paramlist(SciLanguageParser.Dec_f_paramlistContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SciLanguageParser#dec_paramlist}.
 	 * @param ctx the parse tree
@@ -376,4 +376,144 @@ public interface SciLanguageListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSubpparamlist(SciLanguageParser.SubpparamlistContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#subproglist}.
+	 * @param ctx the parse tree
+	 */
+	void enterSubproglist(SciLanguageParser.SubproglistContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#subproglist}.
+	 * @param ctx the parse tree
+	 */
+	void exitSubproglist(SciLanguageParser.SubproglistContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#codproc}.
+	 * @param ctx the parse tree
+	 */
+	void enterCodproc(SciLanguageParser.CodprocContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#codproc}.
+	 * @param ctx the parse tree
+	 */
+	void exitCodproc(SciLanguageParser.CodprocContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#codfun}.
+	 * @param ctx the parse tree
+	 */
+	void enterCodfun(SciLanguageParser.CodfunContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#codfun}.
+	 * @param ctx the parse tree
+	 */
+	void exitCodfun(SciLanguageParser.CodfunContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#expcond}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpcond(SciLanguageParser.ExpcondContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#expcond}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpcond(SciLanguageParser.ExpcondContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#if_then}.
+	 * @param ctx the parse tree
+	 */
+	void enterIf_then(SciLanguageParser.If_thenContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#if_then}.
+	 * @param ctx the parse tree
+	 */
+	void exitIf_then(SciLanguageParser.If_thenContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#then_else}.
+	 * @param ctx the parse tree
+	 */
+	void enterThen_else(SciLanguageParser.Then_elseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#then_else}.
+	 * @param ctx the parse tree
+	 */
+	void exitThen_else(SciLanguageParser.Then_elseContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#do_body}.
+	 * @param ctx the parse tree
+	 */
+	void enterDo_body(SciLanguageParser.Do_bodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#do_body}.
+	 * @param ctx the parse tree
+	 */
+	void exitDo_body(SciLanguageParser.Do_bodyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#doval}.
+	 * @param ctx the parse tree
+	 */
+	void enterDoval(SciLanguageParser.DovalContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#doval}.
+	 * @param ctx the parse tree
+	 */
+	void exitDoval(SciLanguageParser.DovalContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#casos}.
+	 * @param ctx the parse tree
+	 */
+	void enterCasos(SciLanguageParser.CasosContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#casos}.
+	 * @param ctx the parse tree
+	 */
+	void exitCasos(SciLanguageParser.CasosContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#casos2}.
+	 * @param ctx the parse tree
+	 */
+	void enterCasos2(SciLanguageParser.Casos2Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#casos2}.
+	 * @param ctx the parse tree
+	 */
+	void exitCasos2(SciLanguageParser.Casos2Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#etiquetas}.
+	 * @param ctx the parse tree
+	 */
+	void enterEtiquetas(SciLanguageParser.EtiquetasContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#etiquetas}.
+	 * @param ctx the parse tree
+	 */
+	void exitEtiquetas(SciLanguageParser.EtiquetasContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#etiquetas2}.
+	 * @param ctx the parse tree
+	 */
+	void enterEtiquetas2(SciLanguageParser.Etiquetas2Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#etiquetas2}.
+	 * @param ctx the parse tree
+	 */
+	void exitEtiquetas2(SciLanguageParser.Etiquetas2Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#etiquetas3}.
+	 * @param ctx the parse tree
+	 */
+	void enterEtiquetas3(SciLanguageParser.Etiquetas3Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#etiquetas3}.
+	 * @param ctx the parse tree
+	 */
+	void exitEtiquetas3(SciLanguageParser.Etiquetas3Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#listaetiqetas}.
+	 * @param ctx the parse tree
+	 */
+	void enterListaetiqetas(SciLanguageParser.ListaetiqetasContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#listaetiqetas}.
+	 * @param ctx the parse tree
+	 */
+	void exitListaetiqetas(SciLanguageParser.ListaetiqetasContext ctx);
 }

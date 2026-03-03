@@ -32,7 +32,8 @@ decfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_f_pa
 dec_f_paramlist : tipo ',' 'INTENT' '(' dec_paramlist;
 dec_paramlist : 'IN' ')' IDENT ';' dec_f_paramlist | tipoparam ')' IDENT ';'; //LL(2)
 
-sent : IDENT '=' exp ';' | proc_call ';' ;
+sent : IDENT '=' exp ';' | proc_call ';'
+    | 'IF' '(' expcond ')' if_then | 'DO' do_body | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT';
 exp : factor exp2 ;
 exp2 : op factor exp2 | ;
 op : oparit ;
@@ -46,6 +47,29 @@ subpparamlist : '(' exp explist ')' | ;
 subproglist : codproc subproglist | codfun subproglist | ;
 codproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist dcllist sentlist 'END' 'SUBROUTINE' IDENT ;
 codfun : 'FUNCTION' IDENT '(' nomparamlist ')' tipo '::' IDENT ';' dec_f_paramlist dcllist sentlist IDENT '=' exp ';' 'END' 'FUNCTION' IDENT ;
+
+// ------------ GRAMMAR RULES: VOLUNTARY PART ------------
+expcond : ;
+
+if_then : sent | 'THEN' sentlist then_else;
+
+then_else : 'ENDIF' | 'ELSE' sentlist 'ENDIF';
+
+do_body : 'WHILE' '(' expcond ')' sentlist 'ENDDO' | IDENT '=' doval ',' doval ',' doval sentlist 'ENDDO';
+
+doval : NUM_INT_CONST | IDENT;
+
+casos : 'CASE' casos2 | ;
+
+casos2 : '(' etiquetas ')' sentlist casos | 'DEFAULT' sentlist;
+
+etiquetas :  simpvalue etiquetas2 | ':' simpvalue;
+
+etiquetas2 : listaetiqetas | ':' etiquetas3;
+
+etiquetas3 : simpvalue | ;
+
+listaetiqetas : ',' simpvalue listaetiqetas | ;
 
 // ------------ KEYWORDS TOKENS ------------
 
