@@ -14,7 +14,7 @@ dcl : tipo dcl2 ;
 dcl2 : defcte | defvar ;
 defcte : ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';' ;
 ctelist : ',' IDENT '=' simpvalue ctelist | ;
-simpvalue : NUM_INT_CONST | NUM_REAL_CONST | STRING_CONST ;
+simpvalue : NUM_INT_CONST | NUM_REAL_CONST | STRING_CONST | NUM_INT_CONST_B | NUM_INT_CONST_O | NUM_INT_CONST_H;
 defvar : '::' varlist ';' ;
 tipo : 'INTEGER' | 'REAL' | 'CHARACTER' charlength ;
 charlength : '(' NUM_INT_CONST ')' | ;
@@ -57,6 +57,10 @@ STRING_CONST : '\'' STRING_SIMPLE '\''
              ;
 COMMENTARY : '!' TEXT (EOL | EOF);
 
+NUM_INT_CONST_B : 'b`' SINTAX_B+ '`';
+NUM_INT_CONST_O : 'o`' SINTAX_O+ '`';
+NUM_INT_CONST_H : 'z`' SINTAX_H+ '`';
+
 // ------------ FRAGMENTS ------------
 fragment LETTER : [a-zA-Z];
 fragment DIGIT : [0-9];
@@ -65,3 +69,6 @@ fragment STRING_SIMPLE : (~[\n\r] | '\'\'')*;
 fragment STRING_DOUBLE : (~[\n\r] | '"''"')*;
 fragment TEXT : ~[\r\n]+;
 fragment EOL : '\r'? '\n';
+fragment SINTAX_B : [0-1];
+fragment SINTAX_O : [0-7];
+fragment SINTAX_H : [A-F0-9];
