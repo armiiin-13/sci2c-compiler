@@ -49,7 +49,16 @@ codproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist dcllist sentlist '
 codfun : 'FUNCTION' IDENT '(' nomparamlist ')' tipo '::' IDENT ';' dec_f_paramlist dcllist sentlist IDENT '=' exp ';' 'END' 'FUNCTION' IDENT ;
 
 // ------------ GRAMMAR RULES: VOLUNTARY PART ------------
-expcond : ;
+
+expcond : factorcond expcond2 ;
+
+expcond2 : oplog factorcond expcond2 | ;
+
+oplog : '.OR.' | '.AND.' | '.EQV.' | '.NEQV.' ;
+
+factorcond : exp opcomp exp | '(' expcond ')' | '.NOT.' factorcond | '.TRUE.' | '.FALSE.' ;
+
+opcomp : '<' | '>' | '<=' | '>=' | '==' | '/=' ;
 
 if_then : sent | 'THEN' sentlist then_else;
 
