@@ -1,0 +1,5 @@
+PROGRAM programa;
+INTEGER, PARAMETER :: parameter = 23;
+variable = exp;
+! This is a comentary
+END PROGRAM programa
