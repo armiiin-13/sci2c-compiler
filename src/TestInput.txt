@@ -1,5 +1,40 @@
-PROGRAM programa;
-INTEGER, PARAMETER :: parameter = 23;
-variable = exp;
-! This is a comentary
-END PROGRAM programa
+! Ejemplo de código para el traductor de Procesadores de Lenguajes
+PROGRAM CalculoMatematico ;
+
+! Zona de declaraciones (dcllist)
+INTEGER, PARAMETER :: multiplicador = 2 ;
+REAL :: radio = 5.0, resultado ;
+CHARACTER(10) :: mensaje = "Finalizado" ;
+
+! Zona de cabeceras (cabecera)
+INTERFACE
+    FUNCTION calcular_area ( r )
+        REAL :: calcular_area ;
+        REAL, INTENT (IN) r ;
+    END FUNCTION calcular_area
+END INTERFACE
+
+! Zona de sentencias del programa principal (sentlist)
+resultado = calcular_area ( radio ) ;
+CALL mostrar_resultado ( resultado ) ;
+
+END PROGRAM CalculoMatematico
+
+! Zona de implementación de funciones y procedimientos (subproglist)
+
+FUNCTION calcular_area ( r )
+    REAL :: calcular_area ;
+    REAL, INTENT (IN) r ;
+    
+    ! En funciones, el nombre de la función es la variable de retorno
+    x = 1;
+    calcular_area = 3.1415 * r * r ;
+END FUNCTION calcular_area
+
+SUBROUTINE mostrar_resultado ( val )
+    REAL, INTENT (IN) val ;
+    val = 7;
+    
+    ! Los procedimientos no devuelven valor
+    ! Aquí irían las operaciones del procedimiento
+END SUBROUTINE mostrar_resultado

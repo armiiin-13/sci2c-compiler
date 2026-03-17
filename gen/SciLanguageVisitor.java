@@ -256,6 +256,30 @@ public interface SciLanguageVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpcond(SciLanguageParser.ExpcondContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#expcond2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpcond2(SciLanguageParser.Expcond2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#oplog}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOplog(SciLanguageParser.OplogContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#factorcond}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFactorcond(SciLanguageParser.FactorcondContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#opcomp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOpcomp(SciLanguageParser.OpcompContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link SciLanguageParser#if_then}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

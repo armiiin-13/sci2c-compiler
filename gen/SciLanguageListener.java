@@ -417,6 +417,46 @@ public interface SciLanguageListener extends ParseTreeListener {
 	 */
 	void exitExpcond(SciLanguageParser.ExpcondContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#expcond2}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpcond2(SciLanguageParser.Expcond2Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#expcond2}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpcond2(SciLanguageParser.Expcond2Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#oplog}.
+	 * @param ctx the parse tree
+	 */
+	void enterOplog(SciLanguageParser.OplogContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#oplog}.
+	 * @param ctx the parse tree
+	 */
+	void exitOplog(SciLanguageParser.OplogContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#factorcond}.
+	 * @param ctx the parse tree
+	 */
+	void enterFactorcond(SciLanguageParser.FactorcondContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#factorcond}.
+	 * @param ctx the parse tree
+	 */
+	void exitFactorcond(SciLanguageParser.FactorcondContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#opcomp}.
+	 * @param ctx the parse tree
+	 */
+	void enterOpcomp(SciLanguageParser.OpcompContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#opcomp}.
+	 * @param ctx the parse tree
+	 */
+	void exitOpcomp(SciLanguageParser.OpcompContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SciLanguageParser#if_then}.
 	 * @param ctx the parse tree
 	 */

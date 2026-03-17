@@ -46,7 +46,7 @@ subpparamlist : '(' exp explist ')' | ;
 
 subproglist : codproc subproglist | codfun subproglist | ;
 codproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist dcllist sentlist 'END' 'SUBROUTINE' IDENT ;
-codfun : 'FUNCTION' IDENT '(' nomparamlist ')' tipo '::' IDENT ';' dec_f_paramlist dcllist sentlist IDENT '=' exp ';' 'END' 'FUNCTION' IDENT ;
+codfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_f_paramlist dcllist sentlist IDENT '=' exp ';' 'END' 'FUNCTION' IDENT ;
 
 // ------------ GRAMMAR RULES: VOLUNTARY PART ------------
 
