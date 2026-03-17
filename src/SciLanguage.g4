@@ -1,7 +1,7 @@
 grammar SciLanguage;
 
 // ------------ GRAMMAR RULES ------------
-prg : 'PROGRAM' IDENT ';' dcllist cabecera sentlist 'END' ;
+prg : 'PROGRAM' IDENT ';' dcllist cabecera sentlist 'END' 'PROGRAM' IDENT subproglist;
 
 dcllist : dcl dcllist | ;
 cabecera : 'INTERFACE' cablist 'END' 'INTERFACE' | ;
@@ -83,7 +83,9 @@ NUM_REAL_CONST : SIGN DIGIT+ '.' DIGIT+
 STRING_CONST : '\'' STRING_SIMPLE '\''
              | '"' STRING_DOUBLE '"'
              ;
-COMMENTARY : '!' TEXT (EOL | EOF);
+COMMENTARY : '!' TEXT (EOL | EOF) -> skip;
+
+TABS : (EOL | '\t' | ' ') -> skip;
 
 NUM_INT_CONST_B : 'b`' SINTAX_B+ '`';
 NUM_INT_CONST_O : 'o`' SINTAX_O+ '`';

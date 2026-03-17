@@ -11,7 +11,7 @@ public class Main {
             SciLanguageLexer analex = new SciLanguageLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(analex);
             SciLanguageParser anasint = new SciLanguageParser(tokens);
-            anasint.axiom();
+            anasint.prg();
         } catch (org.antlr.v4.runtime.RecognitionException e) {
             System.err.println("REC " + e.getMessage()); // input error
         } catch (IOException e) {
