@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.*;
 public class Main {
     public static void main(String[] args) {
         try{
-            CharStream input = CharStreams.fromFileName("src/TestInput.txt");
+            CharStream input = CharStreams.fromFileName("src/ej1.for");
             SciLanguageLexer analex = new SciLanguageLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(analex);
             SciLanguageParser anasint = new SciLanguageParser(tokens);
@@ -17,7 +17,7 @@ public class Main {
         } catch (IOException e) {
             System.err.println("IO " + e.getMessage()); // error opening files
         } catch (RuntimeException e) {
-            //Cualquier otro fallo
+            // other errors
             System.err.println("RUN " + e.getMessage()); // other errors
         }
     }
