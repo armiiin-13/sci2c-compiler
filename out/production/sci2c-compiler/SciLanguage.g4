@@ -83,11 +83,11 @@ listaetiqetas : ',' simpvalue listaetiqetas | ;
 // ------------ KEYWORDS TOKENS ------------
 
 // ------------ GENERAL TOKENS ------------
-IDENT : LETTER (LETTER | DIGIT | '_')*;
-NUM_INT_CONST : SIGN DIGIT+;
-NUM_REAL_CONST : SIGN DIGIT+ '.' DIGIT+
-               | SIGN DIGIT+ ('e' | 'E') SIGN DIGIT+
-               | SIGN DIGIT+ '.' DIGIT+ ('e' | 'E') SIGN DIGIT+
+IDENT : LETTER IDENT_2 ;
+NUM_INT_CONST : SIGN DIGIT DIGIT_2;
+NUM_REAL_CONST : SIGN DIGIT DIGIT_2 '.' DIGIT DIGIT_2
+               | SIGN DIGIT DIGIT_2 ('e' | 'E') SIGN DIGIT DIGIT_2
+               | SIGN DIGIT DIGIT_2 '.' DIGIT DIGIT_2 ('e' | 'E') SIGN DIGIT DIGIT_2
                ;
 STRING_CONST : '\'' STRING_SIMPLE '\''
              | '"' STRING_DOUBLE '"'
@@ -96,18 +96,25 @@ COMMENTARY : '!' TEXT (EOL | EOF) -> skip;
 
 TABS : (EOL | '\t' | ' ') -> skip;
 
-NUM_INT_CONST_B : 'b`' SINTAX_B+ '`';
-NUM_INT_CONST_O : 'o`' SINTAX_O+ '`';
-NUM_INT_CONST_H : 'z`' SINTAX_H+ '`';
+NUM_INT_CONST_B : 'b`' SINTAX_B DIGIT_B '`';
+NUM_INT_CONST_O : 'o`' SINTAX_O DIGIT_O '`';
+NUM_INT_CONST_H : 'z`' SINTAX_H DIGIT_H '`';
 
 // ------------ FRAGMENTS ------------
+fragment IDENT_2 : (LETTER | DIGIT | '_') IDENT_2 | ;
+fragment DIGIT_2: DIGIT DIGIT_2 | ;
 fragment LETTER : [a-zA-Z];
 fragment DIGIT : [0-9];
-fragment SIGN : '-'?;
-fragment STRING_SIMPLE : (~[\n\r] | '\'\'')*;
-fragment STRING_DOUBLE : (~[\n\r] | '"''"')*;
-fragment TEXT : ~[\r\n]+;
-fragment EOL : '\r'? '\n';
+fragment SIGN : '-' | ;
+fragment STRING_SIMPLE : (~[\n\r] | '\'\'') STRING_SIMPLE | ;
+fragment STRING_DOUBLE : (~[\n\r] | '"''"') STRING_DOUBLE | ;
+fragment TEXT : ~[\r\n] TEXT_LAMBDA;
+fragment TEXT_LAMBDA : ~[\r\n] | ;
+fragment EOL : '\r' '\n' | '\n';
+
 fragment SINTAX_B : [0-1];
 fragment SINTAX_O : [0-7];
 fragment SINTAX_H : [A-F0-9];
+fragment DIGIT_B : SINTAX_B DIGIT_B | ;
+fragment DIGIT_O : SINTAX_O DIGIT_O | ;
+fragment DIGIT_H : SINTAX_H DIGIT_H | ;
