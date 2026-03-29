@@ -51,33 +51,21 @@ codfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_f_pa
 // ------------ GRAMMAR RULES: VOLUNTARY PART ------------
 
 expcond : factorcond expcond2 ;
-
 expcond2 : oplog factorcond expcond2 | ;
-
 oplog : '.OR.' | '.AND.' | '.EQV.' | '.NEQV.' ;
-
 factorcond : exp opcomp exp | '(' expcond ')' | '.NOT.' factorcond | '.TRUE.' | '.FALSE.' ;
-
 opcomp : '<' | '>' | '<=' | '>=' | '==' | '/=' ;
 
 if_then : sent | 'THEN' sentlist then_else;
-
 then_else : 'ENDIF' | 'ELSE' sentlist 'ENDIF';
-
 do_body : 'WHILE' '(' expcond ')' sentlist 'ENDDO' | IDENT '=' doval ',' doval ',' doval sentlist 'ENDDO';
-
 doval : NUM_INT_CONST | IDENT;
 
 casos : 'CASE' casos2 | ;
-
 casos2 : '(' etiquetas ')' sentlist casos | 'DEFAULT' sentlist;
-
 etiquetas :  simpvalue etiquetas2 | ':' simpvalue;
-
 etiquetas2 : listaetiqetas | ':' etiquetas3;
-
 etiquetas3 : simpvalue | ;
-
 listaetiqetas : ',' simpvalue listaetiqetas | ;
 
 // ------------ KEYWORDS TOKENS ------------

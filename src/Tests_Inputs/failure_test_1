@@ -1,0 +1,33 @@
+PROGRAM error_test;
+INTEGER :: a, b, resultado;
+REAL :: x;
+CHARACTER(10) :: msg;
+
+a = 5;
+b = 2;
+x = 3.5;
+CALL sayHi(a, b);
+resultado = sum(a, b);
+msg = "hi";
+resultado = a + ;
+
+END PROGRAM error_test
+
+SUBROUTINE wave(n, m)
+INTEGER, INTENT(IN) n;
+INTEGER, INTENT(IN) m;
+CHARACTER(5) :: texto;
+
+texto = "ok";
+
+END SUBROUTINE wave
+
+FUNCTION sum(n, m) INTEGER :: res;
+INTEGER, INTENT(IN) n;
+INTEGER, INTENT(IN) m;
+INTEGER :: temp;
+
+temp = n + m;
+res = temp;
+
+END FUNCTION sum

@@ -1,0 +1,36 @@
+PROGRAM success_test;
+INTEGER :: a, b, c;
+REAL :: x, y;
+CHARACTER(10) :: msg;
+
+a = 5;
+b = 3;
+c = a + b;
+x = 2.5;
+y = x * 2.0;
+msg = "hello";
+
+CALL print(a, b, c);
+c = sum(a, b);
+
+END PROGRAM success_test
+
+SUBROUTINE print(n, m, r)
+INTEGER, INTENT(IN) n;
+INTEGER, INTENT(IN) m;
+INTEGER, INTENT(IN) r;
+CHARACTER(10) :: texto;
+
+texto = "result";
+
+END SUBROUTINE print
+
+FUNCTION sum(n, m) INTEGER :: res;
+INTEGER, INTENT(IN) n;
+INTEGER, INTENT(IN) m;
+INTEGER :: temp;
+
+temp = n + m;
+res = temp;
+
+END FUNCTION sum
