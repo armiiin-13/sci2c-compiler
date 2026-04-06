@@ -53,7 +53,7 @@ codfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_f_pa
 expcond : factorcond expcond2 ;
 expcond2 : oplog factorcond expcond2 | ;
 oplog : '.OR.' | '.AND.' | '.EQV.' | '.NEQV.' ;
-factorcond : exp opcomp exp | '(' expcond ')' | '.NOT.' factorcond | '.TRUE.' | '.FALSE.' ;
+factorcond : exp opcomp exp | '(' expcond ')' | '.NOT.' factorcond | '.TRUE.' | '.FALSE.' ; //LL(2)
 opcomp : '<' | '>' | '<=' | '>=' | '==' | '/=' ;
 
 if_then : sent | 'THEN' sentlist then_else;
