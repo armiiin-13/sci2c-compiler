@@ -1,23 +1,43 @@
 grammar SciLanguage;
 
-// ------------ GRAMMAR RULES ------------
-prg : 'PROGRAM' IDENT ';' dcllist cabecera sentlist 'END' 'PROGRAM' IDENT subproglist;
+// imports
+@header {
+    import entitiy.*;
+}
 
-dcllist : dcl dcllist | ;
+// ------------ GRAMMAR RULES ------------
+prg returns [Program p]: 'PROGRAM' IDENT ';' {
+            $p = new Program($IDENT.text);
+       }
+       dcllist[$p.getConstants(), $p.getParameters()] {$p.printProgram();} cabecera sentlist 'END' 'PROGRAM' IDENT /*subproglist*/;
+
+dcllist[List<Constant> constants, List<Parameter> variables] : dcl[$constants, $variables] dcllist[$constants, $variables] | ;
 cabecera : 'INTERFACE' cablist 'END' 'INTERFACE' | ;
 cablist : decproc decsubprog | decfun decsubprog;
 decsubprog : decproc decsubprog | decfun decsubprog | ;
 sentlist : sent sentlist2 ;
 sentlist2 : sent sentlist2 | ;
 
-dcl : tipo dcl2 ;
-dcl2 : defcte | defvar ;
-defcte : ',' 'PARAMETER' '::' IDENT '=' simpvalue ctelist ';' ;
-ctelist : ',' IDENT '=' simpvalue ctelist | ;
-simpvalue : NUM_INT_CONST | NUM_REAL_CONST | STRING_CONST | NUM_INT_CONST_B | NUM_INT_CONST_O | NUM_INT_CONST_H;
-defvar : '::' varlist ';' ;
-tipo : 'INTEGER' | 'REAL' | 'CHARACTER' charlength ;
-charlength : '(' NUM_INT_CONST ')' | ;
+dcl[List<Constant> constants, List<Parameter> variables] : tipo dcl2[$constants, $variables, $tipo.type];
+dcl2[List<Constant> constants, List<Parameter> variables, String type] : defcte[$constants] | defvar[$variables, $type] ;
+defcte[List<Constant> constants] : ',' 'PARAMETER' '::' IDENT '=' simpvalue {
+                            Constant newConstant = new Constant($simpvalue.value, $IDENT.text);
+                            $constants.add(newConstant);
+                         }
+                         ctelist[$constants] ';' ;
+ctelist[List<Constant> constants] : ',' IDENT '=' simpvalue{
+                            Constant newConstant = new Constant($simpvalue.value, $IDENT.text);
+                            $constants.add(newConstant);
+                         } ctelist[$constants] | ;
+simpvalue returns [String value] : NUM_INT_CONST {$value = $NUM_INT_CONST.text;}
+                                 | NUM_REAL_CONST {$value = $NUM_REAL_CONST.text;}
+                                 | STRING_CONST {$value = $STRING_CONST.text;}
+                                 | NUM_INT_CONST_B {$value = $NUM_INT_CONST_B.text;}
+                                 | NUM_INT_CONST_O {$value = $NUM_INT_CONST_O.text;}
+                                 | NUM_INT_CONST_H {$value = $NUM_INT_CONST_H.text;};
+defvar[List<Parameter> variables, String type] : '::' varlist ';' ;
+tipo returns [String type]: 'INTEGER' {$type = "int";}| 'REAL' {$type = "float";}| 'CHARACTER' charlength {$type = "char" + $charlength.length;};
+charlength returns [String length]: '(' NUM_INT_CONST ')' {$length = "["+ $NUM_INT_CONST.text +"]";} | {$length = "[]";};
 varlist : IDENT init varlist2 ;
 varlist2 : ',' IDENT init varlist2 | ;
 init : '=' simpvalue | ;
@@ -44,9 +64,9 @@ explist : ',' exp explist | ;
 proc_call : 'CALL' IDENT subpparamlist ;
 subpparamlist : '(' exp explist ')' | ;
 
-subproglist : codproc subproglist | codfun subproglist | ;
-codproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist dcllist sentlist 'END' 'SUBROUTINE' IDENT ;
-codfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_f_paramlist dcllist sentlist IDENT '=' exp ';' 'END' 'FUNCTION' IDENT ;
+//subproglist : codproc subproglist | codfun subproglist | ;
+// codproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist dcllist sentlist 'END' 'SUBROUTINE' IDENT ;
+// codfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_f_paramlist dcllist sentlist IDENT '=' exp ';' 'END' 'FUNCTION' IDENT ;
 
 // ------------ GRAMMAR RULES: VOLUNTARY PART ------------
 

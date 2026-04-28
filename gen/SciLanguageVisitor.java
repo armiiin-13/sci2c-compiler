@@ -1,4 +1,7 @@
-// Generated from C:/Users/armii/Documents/Universidad/Estructura_Datos_Avanzada/Exams/sci2c-compiler/src/SciLanguage.g4 by ANTLR 4.13.2
+// Generated from C:/Users/armii/Documents/Universidad/Procesadores_Lenguajes/Compiler_Sci2C/sci2c-compiler/src/SciLanguage.g4 by ANTLR 4.13.2
+
+    import entitiy.*;
+
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -231,24 +234,6 @@ public interface SciLanguageVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSubpparamlist(SciLanguageParser.SubpparamlistContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SciLanguageParser#subproglist}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSubproglist(SciLanguageParser.SubproglistContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SciLanguageParser#codproc}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCodproc(SciLanguageParser.CodprocContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SciLanguageParser#codfun}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCodfun(SciLanguageParser.CodfunContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SciLanguageParser#expcond}.
 	 * @param ctx the parse tree

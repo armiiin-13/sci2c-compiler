@@ -3,7 +3,9 @@ package entitiy;
 import java.util.ArrayList;
 
 public class Program{
+    private String name;
     private ArrayList<Constant> constants;
+    private ArrayList<Parameter> parameters;
     private ArrayList<Function> functions;
     private Function main;
 
@@ -13,12 +15,21 @@ public class Program{
         this.main = new Function(new Header("void","main"), new Body());
     }
 
+    public Program(String name){
+        this();
+        this.name = name;
+
+        // DEBUG
+        System.out.println("Program Created with name = " + this.name);
+    }
+
     public void printProgram(){
+        System.out.println("Program with name: " + this.name);
         for (Constant constant : constants){
             System.out.println("#define " + constant.getName() + " " + constant.getValue()); //PROVISIONAL
         }
 
-        for (Function function : functions){
+        /*for (Function function : functions){
             function.printHeader();
         }
 
@@ -26,7 +37,23 @@ public class Program{
 
         for (Function function : functions){
             function.printFunction();
-        }
+        }*/
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ArrayList<Parameter> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(ArrayList<Parameter> parameters) {
+        this.parameters = parameters;
     }
 
     public ArrayList<Constant> getConstants() {
