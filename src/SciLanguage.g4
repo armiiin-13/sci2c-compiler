@@ -35,10 +35,10 @@ simpvalue returns [String value] : NUM_INT_CONST {$value = $NUM_INT_CONST.text;}
                                  | NUM_INT_CONST_B {$value = $NUM_INT_CONST_B.text;}
                                  | NUM_INT_CONST_O {$value = $NUM_INT_CONST_O.text;}
                                  | NUM_INT_CONST_H {$value = $NUM_INT_CONST_H.text;};
-defvar[List<Parameter> variables, String type] : '::' varlist ';' ;
+defvar[List<Tuple<String, List<Parameter>>> variables, String type] : '::' varlist[$variables, $type] ';' ;
 tipo returns [String type]: 'INTEGER' {$type = "int";}| 'REAL' {$type = "float";}| 'CHARACTER' charlength {$type = "char" + $charlength.length;};
 charlength returns [String length]: '(' NUM_INT_CONST ')' {$length = "["+ $NUM_INT_CONST.text +"]";} | {$length = "[]";};
-varlist : IDENT init varlist2 ;
+varlist[List<Tuple<String, List<Parameter>>> variables, String type] : IDENT init varlist2 ;
 varlist2 : ',' IDENT init varlist2 | ;
 init : '=' simpvalue | ;
 

@@ -1,16 +1,20 @@
 package entitiy;
 
+import util.Tuple;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class Program{
     private String name;
     private ArrayList<Constant> constants;
-    private ArrayList<Parameter> parameters;
+    private ArrayList<Tuple<String, List<Parameter>>> parameters;
     private ArrayList<Function> functions;
     private Function main;
 
     public Program() {
         this.constants = new ArrayList<>();
+        this.parameters = new ArrayList<>();
         this.functions = new ArrayList<>();
         this.main = new Function(new Header("void","main"), new Body());
     }
@@ -21,6 +25,10 @@ public class Program{
 
         // DEBUG
         System.out.println("Program Created with name = " + this.name);
+    }
+
+    public void addParameter(Tuple tuple){
+        this.parameters.add(tuple);
     }
 
     public void printProgram(){
@@ -48,11 +56,11 @@ public class Program{
         this.name = name;
     }
 
-    public ArrayList<Parameter> getParameters() {
+    public ArrayList<Tuple<String, List<Parameter>>> getParameters() {
         return parameters;
     }
 
-    public void setParameters(ArrayList<Parameter> parameters) {
+    public void setParameters(ArrayList<Tuple<String, List<Parameter>>> parameters) {
         this.parameters = parameters;
     }
 

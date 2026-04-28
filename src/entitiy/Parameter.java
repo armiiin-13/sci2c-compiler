@@ -4,17 +4,20 @@ import java.util.ArrayList;
 
 public class Parameter {
     private String type;
-    private ArrayList<String> names;
+    private String name;
     private String value;
     private boolean pointer;
 
-    public Parameter(String type){
+    public Parameter(String type, String name, String value){
         this.type = type;
-        this.names = new ArrayList<>();
+        this.name = name;
+        this.value = value;
     }
 
-    public void addParameter(String name){
-        this.names.add(name);
+    public Parameter(String type, String name){
+        this.type = type;
+        this.name = name;
+        this.value = null;
     }
 
     public String getValue() {
@@ -33,12 +36,12 @@ public class Parameter {
         this.type = type;
     }
 
-    public ArrayList<String> getNames() {
-        return names;
+    public String getName() {
+        return name;
     }
 
-    public void setNames(ArrayList<String> names) {
-        this.names = names;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isPointer() {
