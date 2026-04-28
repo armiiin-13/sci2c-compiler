@@ -96,8 +96,8 @@ fragment DIGIT : [0-9];
 fragment SIGN : '-' | ;
 fragment STRING_SIMPLE : (~[\n\r] | '\'\'') STRING_SIMPLE | ;
 fragment STRING_DOUBLE : (~[\n\r] | '"''"') STRING_DOUBLE | ;
-fragment TEXT : ~[\r\n] TEXT_LAMBDA;
-fragment TEXT_LAMBDA : ~[\r\n] | ;
+fragment TEXT : ~[\r\n] TEXT | ;
+//fragment TEXT_LAMBDA : ~[\r\n] | ;
 fragment EOL : '\r' '\n' | '\n';
 
 fragment SINTAX_B : [0-1];

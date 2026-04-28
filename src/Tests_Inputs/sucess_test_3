@@ -1,0 +1,21 @@
+PROGRAM NetworkManager;
+
+CHARACTER(12) :: status = "IDLE";
+INTEGER :: connections = 0;
+
+INTERFACE
+    SUBROUTINE connect_device(count)
+        INTEGER, INTENT(INOUT) count;
+    END SUBROUTINE connect_device
+END INTERFACE
+
+connections = connections + 1;
+status = "CONNECTED";
+CALL connect_device(connections);
+
+END PROGRAM NetworkManager
+
+SUBROUTINE connect_device(count)
+    INTEGER, INTENT(INOUT) count;
+    count = count + 1;
+END SUBROUTINE connect_device

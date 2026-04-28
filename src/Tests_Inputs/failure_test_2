@@ -1,0 +1,12 @@
+PROGRAM myProgram;
+
+INTEGER x = 1;
+
+INTERFACE
+SUBROUTINE subrutine(x)
+        INTEGER, INTENT(INOUT) count;
+    END SUBROUTINE subrutine
+END INTERFACE
+
+x = x + 1;
+END PROGRAM myProgram

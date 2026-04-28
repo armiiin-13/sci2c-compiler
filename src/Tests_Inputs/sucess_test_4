@@ -1,0 +1,23 @@
+PROGRAM MotionControl;
+
+REAL :: velocity = 10.5, time = 2.0;
+REAL :: distance;
+
+INTERFACE
+    SUBROUTINE calculate_pos(v, t)
+        REAL, INTENT(IN) v;
+        REAL, INTENT(IN) t;
+    END SUBROUTINE calculate_pos
+END INTERFACE
+
+velocity = velocity + 5.0;
+CALL calculate_pos(velocity, time);
+
+END PROGRAM MotionControl
+
+SUBROUTINE calculate_pos(v, t)
+    REAL, INTENT(IN) v;
+    REAL, INTENT(IN) t;
+    REAL :: p;
+    p = v * t + 0.0;
+END SUBROUTINE calculate_pos

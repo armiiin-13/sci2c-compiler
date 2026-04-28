@@ -1,0 +1,15 @@
+PROGRAM prueba;
+
+REAL :: velocity = true;
+REAL :: distance;
+
+velocity = velocity + 5.0;
+CALL calculate_pos(velocity, time);
+
+END PROGRAM MotionControl
+
+SUBROUTINE calculate_pos(v, t)
+    REAL, INTENT(IN) v;
+    REAL :: p;
+    p = v * t + 0.0;
+END SUBROUTINE calculate_pos
