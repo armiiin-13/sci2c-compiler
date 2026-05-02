@@ -19,7 +19,9 @@ sentlist : sent sentlist2 ;
 sentlist2 : sent sentlist2 | ;
 
 dcl[List<Constant> constants, List<Parameter> variables] : tipo dcl2[$constants, $variables, $tipo.type];
+
 dcl2[List<Constant> constants, List<Parameter> variables, String type] : defcte[$constants] | defvar[$variables, $type] ;
+
 defcte[List<Constant> constants] : ',' 'PARAMETER' '::' IDENT '=' simpvalue {
                             Constant newConstant = new Constant($simpvalue.value, $IDENT.text);
                             $constants.add(newConstant);
@@ -35,12 +37,23 @@ simpvalue returns [String value] : NUM_INT_CONST {$value = $NUM_INT_CONST.text;}
                                  | NUM_INT_CONST_B {$value = $NUM_INT_CONST_B.text;}
                                  | NUM_INT_CONST_O {$value = $NUM_INT_CONST_O.text;}
                                  | NUM_INT_CONST_H {$value = $NUM_INT_CONST_H.text;};
+
 defvar[List<Tuple<String, List<Parameter>>> variables, String type] : '::' varlist[$variables, $type] ';' ;
+
 tipo returns [String type]: 'INTEGER' {$type = "int";}| 'REAL' {$type = "float";}| 'CHARACTER' charlength {$type = "char" + $charlength.length;};
 charlength returns [String length]: '(' NUM_INT_CONST ')' {$length = "["+ $NUM_INT_CONST.text +"]";} | {$length = "[]";};
-varlist[List<Tuple<String, List<Parameter>>> variables, String type] : IDENT init varlist2 ;
-varlist2 : ',' IDENT init varlist2 | ;
-init : '=' simpvalue | ;
+
+varlist[List<Tuple<String, List<Parameter>>> variables, String type] : IDENT init[$type] {
+    List<Parameter> parametros = new Arralist<>();
+    parametros.add($init.newParam)
+} varlist2[$variables, $type, $parametros] ;
+
+varlist2[List<Tuple<String, List<Parameter>>> variables, String type, List<Parameter> parametros] : ',' IDENT init[$type]
+    {$parametros.add($init.newParam);} varlist2[$variables, $type, $parametros]
+    | {variables.add(type,parametros);};    //Final de varlist, añadimos tupla<tipo, lista<parametros>>
+
+init[String type] returns [Parameter newParam]: '=' simpvalue { $newParam = new Parameter(type, $IDENT.text, $simpvalue.value); }
+    | { $newParam = new Parameter(type, $IDENT.text); };
 
 decproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist 'END' 'SUBROUTINE' IDENT;
 formal_paramlist : '(' nomparamlist_init ')' | ;
