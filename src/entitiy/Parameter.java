@@ -28,18 +28,40 @@ public class Parameter {
     }
 
     public void setValue(String value) {
-
         if (value == null) {
             this.value = null;
             return;
         }
 
+        // SOLO para char (cadenas)
         if (type.startsWith("char")) {
+
+            // Caso: 'Hola'
             if (value.startsWith("'") && value.endsWith("'")) {
-                this.value = "\"" + value.substring(1, value.length() - 1) + "\"";
-            } else {
+                String inner = value.substring(1, value.length() - 1);
+
+                // Manejar escapes de Fortran:
+                // 'he''llo' -> he'llo
+                inner = inner.replace("''", "'");
+
+                // Escapar comillas dobles para C
+                inner = inner.replace("\"", "\\\"");
+
+                this.value = "\"" + inner + "\"";
+            }
+            // Caso: ya viene con comillas dobles
+            else if (value.startsWith("\"") && value.endsWith("\"")) {
+                String inner = value.substring(1, value.length() - 1);
+
+                inner = inner.replace("\"\"", "\""); // escape Fortran
+                inner = inner.replace("\"", "\\\"");
+
+                this.value = "\"" + inner + "\"";
+            }
+            else {
                 this.value = value;
             }
+
         } else {
             this.value = value;
         }

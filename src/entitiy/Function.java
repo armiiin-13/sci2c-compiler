@@ -5,7 +5,12 @@ import util.Tuple;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class Function{
+
+    private static final String INDENT_SPACE = "    "; // 4 espacios
+
     private Header header;
     private Body block;
     private ArrayList<Tuple<String, List<Parameter>>> localVariables;
@@ -57,7 +62,7 @@ public class Function{
 
 
         // Print Body
-        block.toString();
+        System.out.print(block.toString(INDENT_SPACE));
 
         // Close Function
         System.out.println("}");
@@ -77,7 +82,7 @@ public class Function{
             arraySuffix = type.substring(idx);
         }
 
-        System.out.print("    " + baseType + " ");
+        System.out.print(INDENT_SPACE + baseType + " ");
 
         for (int i = 0; i < params.size(); i++) {
             Parameter p = params.get(i);

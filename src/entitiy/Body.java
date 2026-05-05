@@ -13,10 +13,23 @@ public class Body{
         this.sentences.add(sentence);
     }
 
+    public ArrayList<Sentence> getSentences() {
+        return sentences;
+    }
+
+
     @Override
     public String toString() {
-        return "Body{" +
-                "sentences=" + sentences +
-                '}';
+        return toString("  "); // por defecto, 2 espacios para sentencias
     }
-}
+
+    public String toString(String indent) {
+        StringBuilder sb = new StringBuilder();
+        for (Sentence s : sentences) {
+            sb.append(indent).append(s.getSentence()).append("\n");
+        }
+        return sb.toString();
+    }
+
+
+    }

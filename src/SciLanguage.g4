@@ -10,14 +10,39 @@ grammar SciLanguage;
 prg returns [Program p]: 'PROGRAM' IDENT ';' {
             $p = new Program($IDENT.text);
        }
-       dcllist[$p.getConstants(), $p.getMain().getLocalVariables()] {$p.printProgram();} cabecera sentlist 'END' 'PROGRAM' IDENT /*subproglist*/;
+       dcllist[$p.getConstants(), $p.getMain().getLocalVariables()] cabecera sentlist[null]{
+            $p.getMain().setBlock($sentlist.body);
+            $p.printProgram();
+       } 'END' 'PROGRAM' IDENT /*subproglist*/;
 
 dcllist[List<Constant> constants, List<Tuple<String, List<Parameter>>> variables] : dcl[$constants, $variables] dcllist[$constants, $variables] | ;
 cabecera : 'INTERFACE' cablist 'END' 'INTERFACE' | ;
 cablist : decproc decsubprog | decfun decsubprog;
 decsubprog : decproc decsubprog | decfun decsubprog | ;
-sentlist : sent sentlist2 ;
-sentlist2 : sent sentlist2 | ;
+sentlist[String funcName] returns [Body body]: sent[$funcName] sentlist2[$funcName] {
+    $body = new Body();
+    $body.addSentence($sent.s);
+
+    if ($sentlist2.body != null) {
+        for (Sentence sen : $sentlist2.body.getSentences()){
+            $body.addSentence(sen);
+        }
+    }
+};
+
+sentlist2[String funcName] returns [Body body]: sent[$funcName] sentlist2[$funcName] {
+        $body = new Body();
+        $body.addSentence($sent.s);
+
+        if ($sentlist2.body != null){
+            for (Sentence sen : $sentlist2.body.getSentences()){
+                $body.addSentence(sen);
+            }
+        }
+    }
+    | {
+        $body = new Body();
+    };
 
 dcl[List<Constant> constants, List<Tuple<String, List<Parameter>>> variables] : tipo dcl2[$constants, $variables, $tipo.type];
 
@@ -66,24 +91,57 @@ decfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_f_pa
 dec_f_paramlist : tipo ',' 'INTENT' '(' dec_paramlist;
 dec_paramlist : 'IN' ')' IDENT ';' dec_f_paramlist | tipoparam ')' IDENT ';'; //LL(2)
 
-sent : IDENT '=' exp ';' | proc_call ';'
-    | 'IF' '(' expcond ')' if_then | 'DO' do_body | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT';
-exp : factor exp2 ;
-exp2 : op factor exp2 | ;
+sent[String funcName] returns [Sentence s] :
+    IDENT '=' exp ';' {
+        if ($funcName != null && $IDENT.text.equals($funcName)) {
+            $s = new Sentence(null, "return " + $exp.code + ";");
+        } else {
+            $s = new Sentence(null, $IDENT.text + " = " + $exp.code + ";");
+        }
+
+    } | proc_call ';' {
+        $s = new Sentence(null, $proc_call.code + ";");
+    } ;//| 'IF' '(' expcond ')' if_then | 'DO' do_body | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT';
+exp  returns [String code] : factor exp2 {
+    $code = $factor.code + $exp2.code;
+};
+
+exp2 returns [String code] : op factor exp2 {
+    $code = " " + $op.text + " " + $factor.code + $exp2.code;
+} | {
+    $code = "";
+};
+
 op : oparit ;
 oparit : '+' |'-' | '*' | '/' ;
-factor : simpvalue | '(' exp ')' | IDENT factor2 ;
+factor returns [String code] : simpvalue {
+    $code = $simpvalue.value;
+} | '(' exp ')' {
+    $code = "(" + $exp.code + ")";
+} | IDENT factor2 {
+    $code = $IDENT.text;
+};
 factor2 : '(' exp explist ')' | ;
-explist : ',' exp explist | ;
-proc_call : 'CALL' IDENT subpparamlist ;
-subpparamlist : '(' exp explist ')' | ;
+explist returns [String code] : ',' exp explist {
+    $code = ", " + $exp.code + $explist.code;
+} | {
+    $code = "";
+};
+proc_call returns [String code] : 'CALL' IDENT subpparamlist {
+    $code = $IDENT.text + $subpparamlist.code;
+};
+subpparamlist returns [String code]: '(' exp explist ')' {
+    $code = "(" + $exp.code + $explist.code + ")";
+} | {
+    $code = "()";
+};
 
 //subproglist : codproc subproglist | codfun subproglist | ;
 // codproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist dcllist sentlist 'END' 'SUBROUTINE' IDENT ;
 // codfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_f_paramlist dcllist sentlist IDENT '=' exp ';' 'END' 'FUNCTION' IDENT ;
 
 // ------------ GRAMMAR RULES: VOLUNTARY PART ------------
-
+/*
 expcond : factorcond expcond2 ;
 expcond2 : oplog factorcond expcond2 | ;
 oplog : '.OR.' | '.AND.' | '.EQV.' | '.NEQV.' ;
@@ -101,6 +159,7 @@ etiquetas :  simpvalue etiquetas2 | ':' simpvalue;
 etiquetas2 : listaetiqetas | ':' etiquetas3;
 etiquetas3 : simpvalue | ;
 listaetiqetas : ',' simpvalue listaetiqetas | ;
+*/
 
 // ------------ KEYWORDS TOKENS ------------
 
@@ -111,9 +170,12 @@ NUM_REAL_CONST : SIGN DIGIT DIGIT_2 '.' DIGIT DIGIT_2
                | SIGN DIGIT DIGIT_2 ('e' | 'E') SIGN DIGIT DIGIT_2
                | SIGN DIGIT DIGIT_2 '.' DIGIT DIGIT_2 ('e' | 'E') SIGN DIGIT DIGIT_2
                ;
-STRING_CONST : '\'' STRING_SIMPLE '\''
-             | '"' STRING_DOUBLE '"'
-             ;
+
+STRING_CONST
+ : '\'' ( '\'\'' | ~['\r\n] )* '\''
+ | '"'  ( '""'   | ~["\r\n] )* '"'
+ ;
+
 COMMENTARY : '!' TEXT (EOL | EOF) -> skip;
 
 TABS : (EOL | '\t' | ' ') -> skip;
@@ -128,8 +190,8 @@ fragment DIGIT_2: DIGIT DIGIT_2 | ;
 fragment LETTER : [a-zA-Z];
 fragment DIGIT : [0-9];
 fragment SIGN : '-' | ;
-fragment STRING_SIMPLE : (~[\n\r] | '\'\'') STRING_SIMPLE | ;
-fragment STRING_DOUBLE : (~[\n\r] | '"''"') STRING_DOUBLE | ;
+//fragment STRING_SIMPLE : (~[\n\r] | '\'\'') STRING_SIMPLE | ;
+//fragment STRING_DOUBLE : (~[\n\r] | '""') STRING_DOUBLE | ;
 fragment TEXT : ~[\r\n] TEXT | ;
 //fragment TEXT_LAMBDA : ~[\r\n] | ;
 fragment EOL : '\r' '\n' | '\n';
