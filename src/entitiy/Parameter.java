@@ -1,6 +1,9 @@
 package entitiy;
 
+import util.Tuple;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class Parameter {
     private String type;
@@ -8,13 +11,13 @@ public class Parameter {
     private String value;
     private boolean pointer;
 
-    public Parameter(String type, String name, String value){
+    public Parameter(String type, String name, String value) {
         this.type = type;
         this.name = name;
-        this.value = value;
+        this.setValue(value);
     }
 
-    public Parameter(String type, String name){
+    public Parameter(String type, String name) {
         this.type = type;
         this.name = name;
         this.value = null;
@@ -25,7 +28,21 @@ public class Parameter {
     }
 
     public void setValue(String value) {
-        this.value = value;
+
+        if (value == null) {
+            this.value = null;
+            return;
+        }
+
+        if (type.startsWith("char")) {
+            if (value.startsWith("'") && value.endsWith("'")) {
+                this.value = "\"" + value.substring(1, value.length() - 1) + "\"";
+            } else {
+                this.value = value;
+            }
+        } else {
+            this.value = value;
+        }
     }
 
     public String getType() {

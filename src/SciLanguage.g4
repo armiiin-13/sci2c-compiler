@@ -10,7 +10,7 @@ grammar SciLanguage;
 prg returns [Program p]: 'PROGRAM' IDENT ';' {
             $p = new Program($IDENT.text);
        }
-       dcllist[$p.getConstants(), $p.getParameters()] {$p.printProgram();} cabecera sentlist 'END' 'PROGRAM' IDENT /*subproglist*/;
+       dcllist[$p.getConstants(), $p.getMain().getLocalVariables()] {$p.printProgram();} cabecera sentlist 'END' 'PROGRAM' IDENT /*subproglist*/;
 
 dcllist[List<Constant> constants, List<Tuple<String, List<Parameter>>> variables] : dcl[$constants, $variables] dcllist[$constants, $variables] | ;
 cabecera : 'INTERFACE' cablist 'END' 'INTERFACE' | ;

@@ -1,28 +1,28 @@
 package util;
 
 public class Tuple<T,L>{
-    private T type;
-    private L list;
+    private T first;
+    private L second;
 
     public Tuple(T type, L list) {
-        this.type = type;
-        this.list = list;
+        this.first = type;
+        this.second = list;
     }
 
-    public T getType() {
-        return type;
+    public T getFirst() {
+        return first;
     }
 
-    public void setType(T type) {
-        this.type = type;
+    public void setFirst(T first) {
+        this.first = first;
     }
 
-    public L getList() {
-        return list;
+    public L getSecond() {
+        return second;
     }
 
-    public void setList(L list) {
-        this.list = list;
+    public void setSecond(L second) {
+        this.second = second;
     }
 
 }
