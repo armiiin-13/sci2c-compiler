@@ -1,6 +1,7 @@
-// Generated from C:/Users/armii/Documents/Universidad/Procesadores_Lenguajes/Compiler_Sci2C/sci2c-compiler/src/SciLanguage.g4 by ANTLR 4.13.2
+// Generated from C:/dev/PracticaPL/sci2c-compiler/src/SciLanguage.g4 by ANTLR 4.13.2
 
     import entitiy.*;
+    import util.Tuple;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;

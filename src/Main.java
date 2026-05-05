@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.*;
 public class Main {
     public static void main(String[] args) {
         try{
-            CharStream input = CharStreams.fromFileName(args[0]);
+            CharStream input = CharStreams.fromFileName("src/Tests_Inputs/ej1.for");
             SciLanguageLexer analex = new SciLanguageLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(analex);
             SciLanguageParser anasint = new SciLanguageParser(tokens);

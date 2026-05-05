@@ -3,6 +3,7 @@ grammar SciLanguage;
 // imports
 @header {
     import entitiy.*;
+    import util.Tuple;
 }
 
 // ------------ GRAMMAR RULES ------------
@@ -11,16 +12,16 @@ prg returns [Program p]: 'PROGRAM' IDENT ';' {
        }
        dcllist[$p.getConstants(), $p.getParameters()] {$p.printProgram();} cabecera sentlist 'END' 'PROGRAM' IDENT /*subproglist*/;
 
-dcllist[List<Constant> constants, List<Parameter> variables] : dcl[$constants, $variables] dcllist[$constants, $variables] | ;
+dcllist[List<Constant> constants, List<Tuple<String, List<Parameter>>> variables] : dcl[$constants, $variables] dcllist[$constants, $variables] | ;
 cabecera : 'INTERFACE' cablist 'END' 'INTERFACE' | ;
 cablist : decproc decsubprog | decfun decsubprog;
 decsubprog : decproc decsubprog | decfun decsubprog | ;
 sentlist : sent sentlist2 ;
 sentlist2 : sent sentlist2 | ;
 
-dcl[List<Constant> constants, List<Parameter> variables] : tipo dcl2[$constants, $variables, $tipo.type];
+dcl[List<Constant> constants, List<Tuple<String, List<Parameter>>> variables] : tipo dcl2[$constants, $variables, $tipo.type];
 
-dcl2[List<Constant> constants, List<Parameter> variables, String type] : defcte[$constants] | defvar[$variables, $type] ;
+dcl2[List<Constant> constants, List<Tuple<String, List<Parameter>>> variables, String type] : defcte[$constants] | defvar[$variables, $type] ;
 
 defcte[List<Constant> constants] : ',' 'PARAMETER' '::' IDENT '=' simpvalue {
                             Constant newConstant = new Constant($simpvalue.value, $IDENT.text);
@@ -43,17 +44,17 @@ defvar[List<Tuple<String, List<Parameter>>> variables, String type] : '::' varli
 tipo returns [String type]: 'INTEGER' {$type = "int";}| 'REAL' {$type = "float";}| 'CHARACTER' charlength {$type = "char" + $charlength.length;};
 charlength returns [String length]: '(' NUM_INT_CONST ')' {$length = "["+ $NUM_INT_CONST.text +"]";} | {$length = "[]";};
 
-varlist[List<Tuple<String, List<Parameter>>> variables, String type] : IDENT init[$type] {
-    List<Parameter> parametros = new Arralist<>();
-    parametros.add($init.newParam)
-} varlist2[$variables, $type, $parametros] ;
+varlist[List<Tuple<String, List<Parameter>>> variables, String type] : IDENT init[$type, $IDENT.text] {
+    List<Parameter> parametros = new ArrayList<>();
+    parametros.add($init.newParam);
+} varlist2[$variables, $type, parametros] ;
 
-varlist2[List<Tuple<String, List<Parameter>>> variables, String type, List<Parameter> parametros] : ',' IDENT init[$type]
+varlist2[List<Tuple<String, List<Parameter>>> variables, String type, List<Parameter> parametros] : ',' IDENT init[$type, $IDENT.text]
     {$parametros.add($init.newParam);} varlist2[$variables, $type, $parametros]
-    | {variables.add(type,parametros);};    //Final de varlist, añadimos tupla<tipo, lista<parametros>>
+    | {variables.add(new Tuple<>(type,parametros));};    //Final de varlist, añadimos tupla<tipo, lista<parametros>>
 
-init[String type] returns [Parameter newParam]: '=' simpvalue { $newParam = new Parameter(type, $IDENT.text, $simpvalue.value); }
-    | { $newParam = new Parameter(type, $IDENT.text); };
+init[String type, String name] returns [Parameter newParam]: '=' simpvalue { $newParam = new Parameter(type, name, $simpvalue.value); }
+    | { $newParam = new Parameter(type, name); };
 
 decproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist 'END' 'SUBROUTINE' IDENT;
 formal_paramlist : '(' nomparamlist_init ')' | ;

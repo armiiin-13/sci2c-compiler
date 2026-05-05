@@ -24,4 +24,5 @@ public class Tuple<T,L>{
     public void setList(L list) {
         this.list = list;
     }
+
 }

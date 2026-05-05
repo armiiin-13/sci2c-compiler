@@ -37,7 +37,46 @@ public class Program{
             System.out.println("#define " + constant.getName() + " " + constant.getValue()); //PROVISIONAL
         }
 
-        /*for (Function function : functions){
+        for (Tuple<String, List<Parameter>> paramList : parameters){
+
+            String type = paramList.getType();
+            List<Parameter> vars = paramList.getList();
+
+            StringBuilder line = new StringBuilder();
+
+            for (int i = 0; i < vars.size(); i++) {
+                Parameter p = vars.get(i);
+
+                String varName = p.getName();
+                String value = p.getValue();
+
+                // Manejo especial para char arrays
+                if (type.startsWith("char[")) {
+                    String size = type.substring(type.indexOf("["));
+                    varName = varName + size;
+                }
+
+                line.append(varName);
+
+                if (value != null) {
+                    line.append(" = ").append(value);
+                }
+
+                if (i < vars.size() - 1) {
+                    line.append(", ");
+                }
+            }
+
+            // Imprimir tipo base
+            if (type.startsWith("char[")) {
+                System.out.println("char " + line.toString() + ";");
+            } else {
+                System.out.println(type + " " + line.toString() + ";");
+            }
+
+        }
+
+        for (Function function : functions){
             function.printHeader();
         }
 
@@ -45,7 +84,7 @@ public class Program{
 
         for (Function function : functions){
             function.printFunction();
-        }*/
+        }
     }
 
     public String getName() {
