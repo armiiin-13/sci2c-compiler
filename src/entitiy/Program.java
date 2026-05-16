@@ -20,25 +20,29 @@ public class Program{
     public Program(String name){
         this();
         this.name = name;
-
-        // DEBUG
-        System.out.println("Program Created with name = " + this.name);
     }
 
     public void printProgram(){
-        System.out.println("Program with name: " + this.name);
         for (Constant constant : constants){
             System.out.println("#define " + constant.getName() + " " + constant.getValue()); //PROVISIONAL
         }
 
+        System.out.println();
+
         for (Function function : functions){
             function.printHeader();
+            System.out.println();
         }
+
+        System.out.println();
 
         main.printFunction();
 
+        System.out.println();
+
         for (Function function : functions){
             function.printFunction();
+            System.out.println();
         }
     }
 

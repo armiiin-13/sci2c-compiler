@@ -55,11 +55,9 @@ public class Function{
         System.out.println(header.toString() + " {");
 
         // Print Local Variables
-
         for (Tuple<String, List<Parameter>> decl : localVariables) {
             printDeclTuple(decl);
         }
-
 
         // Print Body
         System.out.print(block.toString(INDENT_SPACE));

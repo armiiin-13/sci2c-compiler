@@ -10,15 +10,17 @@ grammar SciLanguage;
 prg returns [Program p]: 'PROGRAM' IDENT ';' {
             $p = new Program($IDENT.text);
        }
-       dcllist[$p.getConstants(), $p.getMain().getLocalVariables()] cabecera sentlist[null]{
+       dcllist[$p.getConstants(), $p.getMain().getLocalVariables()] cabecera[$p.getFunctions()] sentlist[null]{
             $p.getMain().setBlock($sentlist.body);
             $p.printProgram();
        } 'END' 'PROGRAM' IDENT /*subproglist*/;
 
 dcllist[List<Constant> constants, List<Tuple<String, List<Parameter>>> variables] : dcl[$constants, $variables] dcllist[$constants, $variables] | ;
-cabecera : 'INTERFACE' cablist 'END' 'INTERFACE' | ;
-cablist : decproc decsubprog | decfun decsubprog;
-decsubprog : decproc decsubprog | decfun decsubprog | ;
+cabecera[List<Function> functions] : 'INTERFACE' cablist[$functions] 'END' 'INTERFACE' | ;
+cablist[List<Function> functions] : decproc {$functions.add($decproc.function);} decsubprog[$functions]
+                                  | decfun {$functions.add($decfun.function);} decsubprog[$functions];
+decsubprog[List<Function> functions] : decproc {$functions.add($decproc.function);} decsubprog[$functions]
+                                     | decfun {$functions.add($decfun.function);} decsubprog[$functions] | ;
 sentlist[String funcName] returns [Body body]: sent[$funcName] sentlist2[$funcName] {
     $body = new Body();
     $body.addSentence($sent.s);
@@ -81,15 +83,30 @@ varlist2[List<Tuple<String, List<Parameter>>> variables, String type, List<Param
 init[String type, String name] returns [Parameter newParam]: '=' simpvalue { $newParam = new Parameter(type, name, $simpvalue.value); }
     | { $newParam = new Parameter(type, name); };
 
-decproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist 'END' 'SUBROUTINE' IDENT;
-formal_paramlist : '(' nomparamlist_init ')' | ;
-nomparamlist_init : IDENT nomparamlist;
-nomparamlist : ',' nomparamlist_init | ;
-dec_s_paramlist : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';' dec_s_paramlist | ;
-tipoparam : 'IN' | 'OUT' | 'INOUT';
-decfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_f_paramlist 'END' 'FUNCTION' IDENT;
-dec_f_paramlist : tipo ',' 'INTENT' '(' dec_paramlist;
-dec_paramlist : 'IN' ')' IDENT ';' dec_f_paramlist | tipoparam ')' IDENT ';'; //LL(2)
+decproc returns [Function function]: 'SUBROUTINE' IDENT {
+        $function = new Function(new Header("void", $IDENT.text), new Body());
+    } formal_paramlist[$function.getHeader()] dec_s_paramlist[$function.getHeader()] 'END' 'SUBROUTINE' IDENT;
+formal_paramlist[Header header] : '(' nomparamlist_init[$header] ')' | ;
+nomparamlist_init[Header header] : IDENT {$header.addParam($IDENT.text);} nomparamlist[$header];
+nomparamlist[Header header] : ',' nomparamlist_init[$header] | ;
+dec_s_paramlist[Header header] : tipo ',' 'INTENT' '(' tipoparam ')' IDENT {
+        Parameter param = $header.getParam($IDENT.text);
+        param.setType($tipo.type);
+        param.setPointer($tipoparam.value);
+    }';' dec_s_paramlist[$header] | ;
+tipoparam returns [boolean value] : 'IN' {$value = false;}| 'OUT' {$value = true;}| 'INOUT'{$value = true;};
+
+decfun returns [Function function]: 'FUNCTION' IDENT {
+        $function = new Function(new Header($IDENT.text), new Body());
+    }'(' nomparamlist_init[$function.getHeader()] ')' tipo '::' IDENT {
+        $function.getHeader().setType($tipo.type);
+    }';' dec_f_paramlist[$function.getHeader()] 'END' 'FUNCTION' IDENT;
+dec_f_paramlist[Header header] : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';' {
+        Parameter param = $header.getParam($IDENT.text);
+        param.setType($tipo.type);
+        param.setPointer($tipoparam.value);
+    } dec_f_paramlist[$header]
+    | ;
 
 sent[String funcName] returns [Sentence s] :
     IDENT '=' exp ';' {
@@ -119,9 +136,15 @@ factor returns [String code] : simpvalue {
 } | '(' exp ')' {
     $code = "(" + $exp.code + ")";
 } | IDENT factor2 {
-    $code = $IDENT.text;
+    $code = $IDENT.text + $factor2.code;
 };
-factor2 : '(' exp explist ')' | ;
+factor2 returns [String code]
+    : '(' exp explist ')' {
+        $code = "(" + $exp.code + $explist.code + ")";
+    }
+    | {
+        $code = "";
+    };
 explist returns [String code] : ',' exp explist {
     $code = ", " + $exp.code + $explist.code;
 } | {
@@ -136,7 +159,7 @@ subpparamlist returns [String code]: '(' exp explist ')' {
     $code = "()";
 };
 
-//subproglist : codproc subproglist | codfun subproglist | ;
+// subproglist : codproc subproglist | codfun subproglist | ;
 // codproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist dcllist sentlist 'END' 'SUBROUTINE' IDENT ;
 // codfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_f_paramlist dcllist sentlist IDENT '=' exp ';' 'END' 'FUNCTION' IDENT ;
 

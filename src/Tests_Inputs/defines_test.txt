@@ -1,6 +1,23 @@
-PROGRAM prog1 ;
-INTEGER, PARAMETER :: max_val = 100, min_val = -50;
-REAL, PARAMETER :: pi = 3.1415, e = 2.71828, c = 2e-6;
-INTEGER :: contador = 0, acumulador;
-REAL :: promedio, total = 0.0;
-CHARACTER(10) :: mensaje1 = 'Hola', mensaje2 = 'Mundo';
+PROGRAM prueba;
+
+INTEGER, PARAMETER :: N = 10;
+REAL :: x = 2.5, y;
+CHARACTER(9) :: texto;
+
+INTERFACE
+SUBROUTINE imprimir(a)
+INTEGER, INTENT(IN) a;
+END SUBROUTINE imprimir
+
+FUNCTION suma(a,b)
+INTEGER :: suma;
+INTEGER, INTENT(IN) a;
+INTEGER, INTENT(IN) b;
+END FUNCTION suma
+END INTERFACE
+
+x = 3 + 4;
+CALL imprimir(N);
+y = suma(N, 2);
+
+END PROGRAM prueba

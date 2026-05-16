@@ -23,6 +23,12 @@ public class Parameter {
         this.value = null;
     }
 
+    public Parameter(String name) {
+        this.type = null;
+        this.name = name;
+        this.value = null;
+    }
+
     public String getValue() {
         return value;
     }
@@ -41,7 +47,6 @@ public class Parameter {
                 String inner = value.substring(1, value.length() - 1);
 
                 // Manejar escapes de Fortran:
-                // 'he''llo' -> he'llo
                 inner = inner.replace("''", "'");
 
                 // Escapar comillas dobles para C
@@ -49,6 +54,7 @@ public class Parameter {
 
                 this.value = "\"" + inner + "\"";
             }
+
             // Caso: ya viene con comillas dobles
             else if (value.startsWith("\"") && value.endsWith("\"")) {
                 String inner = value.substring(1, value.length() - 1);
@@ -89,5 +95,33 @@ public class Parameter {
 
     public void setPointer(boolean pointer) {
         this.pointer = pointer;
+    }
+
+    public String paramHeaderDeclaration(){
+        StringBuilder sb = new StringBuilder();
+        if(type.contains("char")){
+            sb.append("char");
+        } else {
+            sb.append(this.type);
+        }
+        sb.append(" ");
+        if(isPointer()){
+            sb.append("*");
+        }
+        sb.append(this.name);
+        if(type.startsWith("char")){
+            if(type.contains("[")){
+                sb.append("[]");
+            }
+        }
+        return sb.toString();
+    }
+
+    // Prov
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.name);
+        return sb.toString();
     }
 }

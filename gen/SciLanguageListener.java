@@ -1,4 +1,4 @@
-// Generated from C:/dev/PracticaPL/sci2c-compiler/src/SciLanguage.g4 by ANTLR 4.13.2
+// Generated from C:/Users/armii/Documents/Universidad/Procesadores_Lenguajes/Compiler_Sci2C/sci2c-compiler/src/SciLanguage.g4 by ANTLR 4.13.2
 
     import entitiy.*;
     import util.Tuple;
@@ -270,16 +270,6 @@ public interface SciLanguageListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDec_f_paramlist(SciLanguageParser.Dec_f_paramlistContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SciLanguageParser#dec_paramlist}.
-	 * @param ctx the parse tree
-	 */
-	void enterDec_paramlist(SciLanguageParser.Dec_paramlistContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SciLanguageParser#dec_paramlist}.
-	 * @param ctx the parse tree
-	 */
-	void exitDec_paramlist(SciLanguageParser.Dec_paramlistContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SciLanguageParser#sent}.
 	 * @param ctx the parse tree

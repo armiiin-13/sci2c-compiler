@@ -1,4 +1,4 @@
-// Generated from C:/dev/PracticaPL/sci2c-compiler/src/SciLanguage.g4 by ANTLR 4.13.2
+// Generated from C:/Users/armii/Documents/Universidad/Procesadores_Lenguajes/Compiler_Sci2C/sci2c-compiler/src/SciLanguage.g4 by ANTLR 4.13.2
 
     import entitiy.*;
     import util.Tuple;
@@ -327,18 +327,6 @@ public class SciLanguageBaseListener implements SciLanguageListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDec_f_paramlist(SciLanguageParser.Dec_f_paramlistContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterDec_paramlist(SciLanguageParser.Dec_paramlistContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDec_paramlist(SciLanguageParser.Dec_paramlistContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -2,7 +2,7 @@ package entitiy;
 
 import java.util.ArrayList;
 
-class Header{
+public class Header{
     private String type;
     private String name;
     private ArrayList<Parameter> params;
@@ -13,8 +13,24 @@ class Header{
         this.params = new ArrayList<>();
     }
 
-    public void addParameter(Parameter param){
-        this.params.add(param);
+    public Header(String name) {
+        this.type = null;
+        this.name = name;
+        this.params = new ArrayList<>();
+    }
+
+    public void addParam(String name){
+        Parameter newParam = new Parameter(name);
+        this.params.add(newParam);
+    }
+
+    public Parameter getParam(String name){
+        for(Parameter param: this.params){
+            if (param.getName().equals(name)){
+                return param;
+            }
+        }
+        throw new IllegalArgumentException("Parameter not defined in " + this.name);
     }
 
     public String getType() {
@@ -52,7 +68,7 @@ class Header{
             sb.append("void");
         } else {
             for (int i = 0; i < params.size(); i++) {
-                sb.append(params.get(i).toString());
+                sb.append(params.get(i).paramHeaderDeclaration());
                 if (i < params.size() - 1) {
                     sb.append(", ");
                 }
