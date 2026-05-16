@@ -12,8 +12,7 @@ prg returns [Program p]: 'PROGRAM' IDENT ';' {
        }
        dcllist[$p.getConstants(), $p.getMain().getLocalVariables()] cabecera[$p.getFunctions()] sentlist[null]{
             $p.getMain().setBlock($sentlist.body);
-            $p.printProgram();
-       } 'END' 'PROGRAM' IDENT /*subproglist*/;
+       } 'END' 'PROGRAM' IDENT subproglist[$p] {$p.printProgram();};
 
 dcllist[List<Constant> constants, List<Tuple<String, List<Parameter>>> variables] : dcl[$constants, $variables] dcllist[$constants, $variables] | ;
 cabecera[List<Function> functions] : 'INTERFACE' cablist[$functions] 'END' 'INTERFACE' | ;
@@ -159,9 +158,30 @@ subpparamlist returns [String code]: '(' exp explist ')' {
     $code = "()";
 };
 
-// subproglist : codproc subproglist | codfun subproglist | ;
-// codproc : 'SUBROUTINE' IDENT formal_paramlist dec_s_paramlist dcllist sentlist 'END' 'SUBROUTINE' IDENT ;
-// codfun : 'FUNCTION' IDENT '(' nomparamlist_init ')' tipo '::' IDENT ';' dec_f_paramlist dcllist sentlist IDENT '=' exp ';' 'END' 'FUNCTION' IDENT ;
+subproglist[Program p] : codproc {$p.addFunction($codproc.func);} subproglist[$p] | codfun {$p.addFunction($codfun.func);} subproglist[$p] | ;
+
+codproc returns [Function func] : 'SUBROUTINE' beginId=IDENT {
+    $func = new Function(new Header("void", $beginId.text), new Body());
+    } formal_paramlist[$func.getHeader()] dec_s_paramlist[$func.getHeader()] dcllist[new ArrayList<Constant>(), $func.getLocalVariables()] sentlist[null] {$func.setBlock($sentlist.body);}
+    'END' 'SUBROUTINE' endId=IDENT {
+        if(!$beginId.text.equals($endId.text)){
+            System.err.println("ERROR: nombres distintos");
+        }
+    };
+
+codfun returns [Function func]  : 'FUNCTION' beginId=IDENT {
+    $func = new Function(new Header(null, $beginId.text), new Body());
+    }'(' nomparamlist_init[$func.getHeader()] ')' tipo '::' IDENT
+    {
+        $func.getHeader().setType($tipo.type);
+    }
+    ';' dec_f_paramlist[$func.getHeader()] dcllist[new ArrayList<Constant>(), $func.getLocalVariables()] sentlist[$beginId.text] {
+        $func.setBlock($sentlist.body);
+    } IDENT '=' exp {$func.getBlock().addSentence(new Sentence(null, "return " + $exp.code + ";"));} ';' 'END' 'FUNCTION' endId=IDENT {
+        if(!$beginId.text.equals($endId.text)){
+            System.err.println("ERROR: nombres distintos");
+        }
+    };
 
 // ------------ GRAMMAR RULES: VOLUNTARY PART ------------
 /*

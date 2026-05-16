@@ -46,6 +46,21 @@ public class Program{
         }
     }
 
+    public void addFunction(Function f){
+
+        for (int i = 0; i < functions.size(); i++) {
+            Function existing = functions.get(i);
+
+            if (existing.getHeader().getName().equals(f.getHeader().getName())) {
+                functions.set(i, f);
+                return;
+            }
+        }
+
+        functions.add(f);
+
+    }
+
     public String getName() {
         return name;
     }
