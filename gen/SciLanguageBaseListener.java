@@ -447,6 +447,42 @@ public class SciLanguageBaseListener implements SciLanguageListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSubpparamlist(SciLanguageParser.SubpparamlistContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSubproglist(SciLanguageParser.SubproglistContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSubproglist(SciLanguageParser.SubproglistContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCodproc(SciLanguageParser.CodprocContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCodproc(SciLanguageParser.CodprocContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCodfun(SciLanguageParser.CodfunContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCodfun(SciLanguageParser.CodfunContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

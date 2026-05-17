@@ -12,7 +12,7 @@ prg returns [Program p]: 'PROGRAM' IDENT ';' {
        }
        dcllist[$p.getConstants(), $p.getMain().getLocalVariables()] cabecera[$p.getFunctions()] sentlist[null]{
             $p.getMain().setBlock($sentlist.body);
-       } 'END' 'PROGRAM' IDENT subproglist[$p] {$p.printProgram();};
+       } 'END' 'PROGRAM' IDENT subproglist[$p] {$p.exportProgram();};
 
 dcllist[List<Constant> constants, List<Tuple<String, List<Parameter>>> variables] : dcl[$constants, $variables] dcllist[$constants, $variables] | ;
 cabecera[List<Function> functions] : 'INTERFACE' cablist[$functions] 'END' 'INTERFACE' | ;

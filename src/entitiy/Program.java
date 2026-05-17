@@ -2,6 +2,8 @@ package entitiy;
 
 import util.Tuple;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,30 +22,6 @@ public class Program{
     public Program(String name){
         this();
         this.name = name;
-    }
-
-    public void printProgram(){
-        for (Constant constant : constants){
-            System.out.println("#define " + constant.getName() + " " + constant.getValue()); //PROVISIONAL
-        }
-
-        System.out.println();
-
-        for (Function function : functions){
-            function.printHeader();
-            System.out.println();
-        }
-
-        System.out.println();
-
-        main.printFunction();
-
-        System.out.println();
-
-        for (Function function : functions){
-            function.printFunction();
-            System.out.println();
-        }
     }
 
     public void addFunction(Function f){
@@ -92,4 +70,37 @@ public class Program{
     public void setMain(Function main) {
         this.main = main;
     }
+    public void exportProgram(){
+        String path = "src/Output_Files/" + this.name + ".c";
+        try{
+            FileWriter writer = new FileWriter(path);
+            for (Constant constant : constants){
+                writer.write("#define " + constant.getName() + " " + constant.getValue());
+                writer.write("\n");
+            }
+            writer.write("\n");
+
+            for (Function function : functions){
+                writer.write(function.headerToString());
+                writer.write("\n");
+            }
+
+            writer.write("\n");
+            writer.write(main.toString());
+            writer.write("\n");
+            writer.write("\n");
+
+            for (Function function : functions){
+                writer.write(function.toString());
+                writer.write("\n");
+                writer.write("\n");
+            }
+
+            writer.close();
+
+        } catch(IOException e){
+            System.out.println("Error al escribir el archivo: " + e.getMessage());
+        }
+    }
+
 }

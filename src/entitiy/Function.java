@@ -45,29 +45,35 @@ public class Function{
         this.localVariables = localVariables;
     }
 
-    public void printHeader(){
-        System.out.print(header.toString() + ";");    //PROVISIONAL
+    public String headerToString(){
+        return header.toString() + ";";
     }
 
-    public void printFunction(){
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
 
-        // Print Header
-        System.out.println(header.toString() + " {");
+        // Add header
+        sb.append(header.toString());
+        sb.append("{\n");
 
-        // Print Local Variables
+        // Add Local Variables
         for (Tuple<String, List<Parameter>> decl : localVariables) {
-            printDeclTuple(decl);
+            sb.append(printDeclTuple(decl));
+            sb.append("\n");
         }
 
         // Print Body
-        System.out.print(block.toString(INDENT_SPACE));
+        sb.append(block.toString(INDENT_SPACE));
 
         // Close Function
-        System.out.println("}");
+        sb.append("}");
 
+        return sb.toString();
     }
 
-    private static void printDeclTuple(Tuple<String, List<Parameter>> decl) {
+    private static String printDeclTuple(Tuple<String, List<Parameter>> decl) {
+        StringBuilder sb = new StringBuilder();
         String type = decl.getFirst();
         List<Parameter> params = decl.getSecond();
 
@@ -80,7 +86,9 @@ public class Function{
             arraySuffix = type.substring(idx);
         }
 
-        System.out.print(INDENT_SPACE + baseType + " ");
+        sb.append(INDENT_SPACE);
+        sb.append(baseType);
+        sb.append(" ");
 
         for (int i = 0; i < params.size(); i++) {
             Parameter p = params.get(i);
@@ -91,13 +99,16 @@ public class Function{
                 if (!arraySuffix.isEmpty()) {
                     v = fortranStringToCString(v);
                 }
-                System.out.print(name + " = " + v);
+                sb.append(name);
+                sb.append(" = ");
+                sb.append(v);
             } else {
-                System.out.print(name);
+                sb.append(name);
             }
-            if (i < params.size() - 1) System.out.print(", ");
+            if (i < params.size() - 1) sb.append(", ");
         }
-        System.out.println(";");
+        sb.append(";");
+        return sb.toString();
     }
 
 

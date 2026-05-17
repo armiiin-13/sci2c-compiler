@@ -370,4 +370,34 @@ public interface SciLanguageListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSubpparamlist(SciLanguageParser.SubpparamlistContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#subproglist}.
+	 * @param ctx the parse tree
+	 */
+	void enterSubproglist(SciLanguageParser.SubproglistContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#subproglist}.
+	 * @param ctx the parse tree
+	 */
+	void exitSubproglist(SciLanguageParser.SubproglistContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#codproc}.
+	 * @param ctx the parse tree
+	 */
+	void enterCodproc(SciLanguageParser.CodprocContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#codproc}.
+	 * @param ctx the parse tree
+	 */
+	void exitCodproc(SciLanguageParser.CodprocContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#codfun}.
+	 * @param ctx the parse tree
+	 */
+	void enterCodfun(SciLanguageParser.CodfunContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#codfun}.
+	 * @param ctx the parse tree
+	 */
+	void exitCodfun(SciLanguageParser.CodfunContext ctx);
 }

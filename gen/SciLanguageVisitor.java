@@ -229,4 +229,22 @@ public interface SciLanguageVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSubpparamlist(SciLanguageParser.SubpparamlistContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#subproglist}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSubproglist(SciLanguageParser.SubproglistContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#codproc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCodproc(SciLanguageParser.CodprocContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#codfun}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCodfun(SciLanguageParser.CodfunContext ctx);
 }
