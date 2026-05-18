@@ -1,22 +1,36 @@
 package entity.statement.conditional;
 
+import entity.routine.Body;
 import entity.statement.Sentence;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class IfThenElse extends Sentence {
-    private List<IECondition> conditions;
+    // sentence of father is the condition
+    private Body ifBody;
+    private Body elseBody;
 
-    public IfThenElse() {
-        super();
-        this.conditions = new ArrayList<>();
+    public IfThenElse(String condition) {
+        super(condition);
+        this.ifBody = new Body();
+        this.elseBody = new Body();
     }
 
-    public IECondition addNewCondition(IEConditionType type){
-        IECondition cond = new IECondition(type);
-        this.conditions.add(cond);
-        return cond;
+    public Body getIfBody() {
+        return ifBody;
+    }
+
+    public void setIfBody(Body ifBody) {
+        this.ifBody = ifBody;
+    }
+
+    public Body getElseBody() {
+        return elseBody;
+    }
+
+    public void setElseBody(Body elseBody) {
+        this.elseBody = elseBody;
     }
 
     @Override
