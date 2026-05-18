@@ -60,20 +60,7 @@ ctelist[List<Constant> constants] : ',' IDENT '=' simpvalue{
                          } ctelist[$constants] | ;
 simpvalue returns [String value] : NUM_INT_CONST {$value = $NUM_INT_CONST.text;}
                                  | NUM_REAL_CONST {$value = $NUM_REAL_CONST.text;}
-                                 | STRING_CONST {
-                                    String s = $STRING_CONST.text;
-
-                                    if (s.startsWith("'")) {
-                                        s = s.substring(1, s.length()-1);
-                                        s = s.replace("''", "'");
-                                        s = s.replace("\"", "\\\"");
-                                        s = "\"" + s + "\"";
-                                    } else {
-                                        s = s.replace("\"\"", "\"");
-                                    }
-
-                                    $value = s;
-                                 }
+                                 | STRING_CONST {$value = $STRING_CONST.text;}
                                  | NUM_INT_CONST_B {$value = $NUM_INT_CONST_B.text;}
                                  | NUM_INT_CONST_O {$value = $NUM_INT_CONST_O.text;}
                                  | NUM_INT_CONST_H {$value = $NUM_INT_CONST_H.text;};
