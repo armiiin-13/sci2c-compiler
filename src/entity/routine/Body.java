@@ -28,7 +28,7 @@ public class Body{
     public String toString(String indent) {
         StringBuilder sb = new StringBuilder();
         for (Sentence s : sentences) {
-            sb.append(indent).append(s.getSentence()).append("\n");
+            sb.append(s.toString(indent)).append("\n");
         }
         return sb.toString();
     }

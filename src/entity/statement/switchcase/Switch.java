@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Switch extends Sentence {
+    // sentence is the selector
     private List<SwitchCase> cases;
     private SwitchCase defaultCase;
 
-    public Switch() {
-        super();
+    public Switch(String selector) {
+        super(selector);
         this.cases = new ArrayList<>();
         this.defaultCase = new SwitchCase(null);
     }
@@ -38,7 +39,19 @@ public class Switch extends Sentence {
     }
 
     @Override
-    public String toString(){
-        return "";
+    public String toString(String indent){
+        StringBuilder sb = new StringBuilder();
+        sb.append(indent).append("switch(").append(this.getSentence()).append("){\n");
+        String doubleIndent = indent + "  ";
+        for (SwitchCase switchCase: this.cases){
+            sb.append(switchCase.toString(doubleIndent));
+            sb.append(doubleIndent).append("\n  ").append("break;\n");
+        }
+        if (! this.defaultCase.getBody().getSentences().isEmpty()){
+            sb.append(indent).append("default:\n");
+            sb.append(this.defaultCase.getBody().toString(doubleIndent + "  "));
+        }
+        sb.append(indent).append("}");
+        return sb.toString();
     }
 }

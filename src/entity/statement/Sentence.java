@@ -18,4 +18,8 @@ public class Sentence{
     public void setSentence(String sentence) {
         this.sentence = sentence;
     }
+
+    public String toString(String indent){
+        return indent + this.sentence;
+    }
 }

@@ -21,7 +21,12 @@ public class While extends Sentence {
     }
 
     @Override
-    public String toString(){
-        return "";
+    public String toString(String indent){
+        StringBuilder sb = new StringBuilder();
+        sb.append(indent).append("while(").append(this.getSentence()).append("){\n");
+        String doubleIndent = indent + "  ";
+        sb.append(this.whileBody.toString(doubleIndent));
+        sb.append(indent).append("}");
+        return sb.toString();
     }
 }

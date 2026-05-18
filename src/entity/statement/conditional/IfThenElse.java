@@ -34,7 +34,17 @@ public class IfThenElse extends Sentence {
     }
 
     @Override
-    public String toString(){
-        return "";
+    public String toString(String indent){
+        StringBuilder sb = new StringBuilder();
+        sb.append(indent).append("if (").append(this.getSentence()).append("){\n");
+        String doubleIndent = indent + "  ";
+        sb.append(this.ifBody.toString(doubleIndent));
+        sb.append(indent).append("\n}");
+        if (!this.elseBody.getSentences().isEmpty()){
+            sb.append(" else {\n");
+            sb.append(this.elseBody.toString(doubleIndent));
+            sb.append(indent).append("}");
+        }
+        return sb.toString();
     }
 }
