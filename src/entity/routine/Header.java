@@ -76,6 +76,15 @@ public class Header{
         }
     }
 
+    public boolean isParameter(String name){
+        for (Parameter param: this.params){
+            if (param.getName().equals(name)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public String toString() {

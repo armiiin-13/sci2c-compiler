@@ -254,6 +254,46 @@ public interface SciLanguageListener extends ParseTreeListener {
 	 */
 	void exitTipoparam(SciLanguageParser.TipoparamContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#formal_paramlist_dummy}.
+	 * @param ctx the parse tree
+	 */
+	void enterFormal_paramlist_dummy(SciLanguageParser.Formal_paramlist_dummyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#formal_paramlist_dummy}.
+	 * @param ctx the parse tree
+	 */
+	void exitFormal_paramlist_dummy(SciLanguageParser.Formal_paramlist_dummyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#nomparamlist_dummy}.
+	 * @param ctx the parse tree
+	 */
+	void enterNomparamlist_dummy(SciLanguageParser.Nomparamlist_dummyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#nomparamlist_dummy}.
+	 * @param ctx the parse tree
+	 */
+	void exitNomparamlist_dummy(SciLanguageParser.Nomparamlist_dummyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#nomparamlist_dummy2}.
+	 * @param ctx the parse tree
+	 */
+	void enterNomparamlist_dummy2(SciLanguageParser.Nomparamlist_dummy2Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#nomparamlist_dummy2}.
+	 * @param ctx the parse tree
+	 */
+	void exitNomparamlist_dummy2(SciLanguageParser.Nomparamlist_dummy2Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#dec_f_paramlist_dummy}.
+	 * @param ctx the parse tree
+	 */
+	void enterDec_f_paramlist_dummy(SciLanguageParser.Dec_f_paramlist_dummyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#dec_f_paramlist_dummy}.
+	 * @param ctx the parse tree
+	 */
+	void exitDec_f_paramlist_dummy(SciLanguageParser.Dec_f_paramlist_dummyContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link SciLanguageParser#decfun}.
 	 * @param ctx the parse tree
 	 */
@@ -373,6 +413,26 @@ public interface SciLanguageListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSubpparamlist(SciLanguageParser.SubpparamlistContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#actual_params}.
+	 * @param ctx the parse tree
+	 */
+	void enterActual_params(SciLanguageParser.Actual_paramsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#actual_params}.
+	 * @param ctx the parse tree
+	 */
+	void exitActual_params(SciLanguageParser.Actual_paramsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SciLanguageParser#actual_params_tail}.
+	 * @param ctx the parse tree
+	 */
+	void enterActual_params_tail(SciLanguageParser.Actual_params_tailContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SciLanguageParser#actual_params_tail}.
+	 * @param ctx the parse tree
+	 */
+	void exitActual_params_tail(SciLanguageParser.Actual_params_tailContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SciLanguageParser#subproglist}.
 	 * @param ctx the parse tree

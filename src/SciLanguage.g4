@@ -13,7 +13,7 @@ grammar SciLanguage;
 prg returns [Program p]: 'PROGRAM' IDENT ';' {
             $p = new Program($IDENT.text);
        }
-       dcllist[$p.getConstants(), $p.getMain().getLocalVariables()] cabecera[$p.getFunctions()] sentlist[null]{
+       dcllist[$p.getConstants(), $p.getMain().getLocalVariables()] cabecera[$p.getFunctions()] sentlist[$p, null,null]{
             $p.getMain().setBlock($sentlist.body);
        } 'END' 'PROGRAM' IDENT subproglist[$p] {$p.exportProgram();};
 
@@ -23,7 +23,7 @@ cablist[List<Function> functions] : decproc {$functions.add($decproc.function);}
                                   | decfun {$functions.add($decfun.function);} decsubprog[$functions];
 decsubprog[List<Function> functions] : decproc {$functions.add($decproc.function);} decsubprog[$functions]
                                      | decfun {$functions.add($decfun.function);} decsubprog[$functions] | ;
-sentlist[String funcName] returns [Body body]: sent[$funcName] sentlist2[$funcName] {
+sentlist[Program p, String funcName, Header funcHeader] returns [Body body]: sent[$p, $funcName, funcHeader] sentlist2[$p, $funcName, funcHeader] {
     $body = new Body();
     $body.addSentence($sent.s);
 
@@ -34,7 +34,7 @@ sentlist[String funcName] returns [Body body]: sent[$funcName] sentlist2[$funcNa
     }
 };
 
-sentlist2[String funcName] returns [Body body]: sent[$funcName] sentlist2[$funcName] {
+sentlist2[Program p, String funcName, Header funcHeader] returns [Body body]: sent[$p, $funcName, funcHeader] sentlist2[$p, $funcName, funcHeader] {
         $body = new Body();
         $body.addSentence($sent.s);
 
@@ -106,6 +106,11 @@ dec_s_paramlist[Header header] : tipo ',' 'INTENT' '(' tipoparam ')' IDENT {
     }';' dec_s_paramlist[$header] | ;
 tipoparam returns [boolean value] : 'IN' {$value = false;}| 'OUT' {$value = true;}| 'INOUT'{$value = true;};
 
+formal_paramlist_dummy : '(' nomparamlist_dummy ')' | ;
+nomparamlist_dummy : IDENT nomparamlist_dummy2;
+nomparamlist_dummy2 : ',' IDENT nomparamlist_dummy2 | ;
+dec_f_paramlist_dummy : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';' dec_f_paramlist_dummy | ;
+
 decfun returns [Function function]: 'FUNCTION' id1=IDENT {
         $function = new Function(new Header($id1.text), new Body());
     }'(' nomparamlist_init[$function.getHeader()] ')' tipo '::' IDENT {
@@ -128,23 +133,28 @@ dec_f_paramlist[Header header] : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';' {
         $header.checkIfNoTypeParam(_localctx.getStart().getLine());
     };
 
-sent[String funcName] returns [Sentence s] :
-    IDENT '=' exp ';' {
+sent[Program p, String funcName, Header funcHeader] returns [Sentence s] :
+    IDENT '=' exp[funcHeader] ';' {
         if ($funcName != null && $IDENT.text.equals($funcName)) {
             $s = new Sentence("return " + $exp.code + ";");
         } else {
-            $s = new Sentence($IDENT.text + " = " + $exp.code + ";");
+            String left = $funcHeader != null && $funcHeader.isParameter($IDENT.text) &&
+                $funcHeader.getParam($IDENT.text,$IDENT.getLine()).isPointer()
+                        ? "*" + $IDENT.text
+                        : $IDENT.text;
+
+            $s = new Sentence(left + " = " + $exp.code + ";");
         }
 
-    } | proc_call ';' {
+    } | proc_call[p] ';' {
         $s = new Sentence($proc_call.code + ";");
     } ;
     // | 'IF' '(' expcond ')' if_then | 'DO' do_body | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT';
-exp  returns [String code] : factor exp2 {
+exp[Header funcHeader]  returns [String code] : factor[funcHeader] exp2[funcHeader] {
     $code = $factor.code + $exp2.code;
 };
 
-exp2 returns [String code] : op factor exp2 {
+exp2[Header funcHeader] returns [String code] : op factor[funcHeader] exp2[funcHeader] {
     $code = " " + $op.text + " " + $factor.code + $exp2.code;
 } | {
     $code = "";
@@ -152,39 +162,76 @@ exp2 returns [String code] : op factor exp2 {
 
 op : oparit ;
 oparit : '+' |'-' | '*' | '/' ;
-factor returns [String code] : simpvalue {
+factor[Header funcHeader] returns [String code] : simpvalue {
     $code = $simpvalue.value;
-} | '(' exp ')' {
+} | '(' exp[funcHeader] ')' {
     $code = "(" + $exp.code + ")";
-} | IDENT factor2 {
-    $code = $IDENT.text + $factor2.code;
+} | IDENT factor2[funcHeader] {
+    String name = $IDENT.text;
+    if ($funcHeader != null && $funcHeader.isParameter($IDENT.text) &&
+        $funcHeader.getParam($IDENT.text,$IDENT.getLine()).isPointer() && $factor2.code.equals("")) {
+            $code = "*" + name;
+    } else {
+        $code = name + $factor2.code;
+    }
 };
-factor2 returns [String code]
-    : '(' exp explist ')' {
+factor2[Header funcHeader] returns [String code]
+    : '(' exp[funcHeader] explist[funcHeader] ')' {
         $code = "(" + $exp.code + $explist.code + ")";
     }
     | {
         $code = "";
     };
-explist returns [String code] : ',' exp explist {
+explist[Header funcHeader] returns [String code] : ',' exp[funcHeader] explist[$funcHeader] {
     $code = ", " + $exp.code + $explist.code;
 } | {
     $code = "";
 };
-proc_call returns [String code] : 'CALL' IDENT subpparamlist {
+proc_call[Program p] returns [String code] : 'CALL' IDENT {
+    Function function = $p.getFunction($IDENT.text);
+    Header funcHeader = function != null ? function.getHeader() : null;
+}subpparamlist[funcHeader] {
     $code = $IDENT.text + $subpparamlist.code;
 };
-subpparamlist returns [String code]: '(' exp explist ')' {
-    $code = "(" + $exp.code + $explist.code + ")";
-} | {
-    $code = "()";
-};
+subpparamlist[Header funcHeader] returns [String code]
+    : '(' actual_params[funcHeader, 0] ')' {
+        $code = "(" + $actual_params.code + ")";
+    }
+    | {
+        $code = "()";
+    };
+actual_params[Header funcHeader, int idx] returns [String code]
+    : exp[null] actual_params_tail[funcHeader, idx + 1] {
+        String arg = $exp.code;
 
-subproglist[Program p] : codproc {$p.addFunction($codproc.func);} subproglist[$p] | codfun {$p.addFunction($codfun.func);} subproglist[$p] | ;
+        if (funcHeader != null
+            && funcHeader.getParams().get(idx).isPointer()) {
+            arg = "&" + arg;
+        }
 
-codproc returns [Function func] : 'SUBROUTINE' beginId=IDENT {
-    $func = new Function(new Header("void", $beginId.text), new Body());
-    } formal_paramlist[$func.getHeader()] dec_s_paramlist[$func.getHeader()] dcllist[new ArrayList<Constant>(), $func.getLocalVariables()] sentlist[null] {$func.setBlock($sentlist.body);}
+        $code = arg + $actual_params_tail.code;
+    };
+
+actual_params_tail[Header funcHeader, int idx] returns [String code]
+    : ',' exp[null] actual_params_tail[funcHeader, idx + 1] {
+        String arg = $exp.code;
+
+        if (funcHeader != null
+            && funcHeader.getParams().get(idx).isPointer()) {
+            arg = "&" + arg;
+        }
+
+        $code = ", " + arg + $actual_params_tail.code;
+    }
+    | {
+        $code = "";
+    };
+
+subproglist[Program p] : codproc[$p] subproglist[$p] | codfun[$p] subproglist[$p] | ;
+
+codproc[Program p]: 'SUBROUTINE' beginId=IDENT {
+    Function func = $p.getFunction($beginId.text);
+    } formal_paramlist_dummy dec_f_paramlist_dummy dcllist[new ArrayList<Constant>(), func.getLocalVariables()] sentlist[$p, null,func.getHeader()] {func.setBlock($sentlist.body);}
     'END' 'SUBROUTINE' endId=IDENT {
         if(!$beginId.text.equals($endId.text)){
             throw new SemanticException(
@@ -195,15 +242,12 @@ codproc returns [Function func] : 'SUBROUTINE' beginId=IDENT {
         }
     };
 
-codfun returns [Function func]  : 'FUNCTION' beginId=IDENT {
-    $func = new Function(new Header(null, $beginId.text), new Body());
-    }'(' nomparamlist_init[$func.getHeader()] ')' tipo '::' IDENT
-    {
-        $func.getHeader().setType($tipo.type);
-    }
-    ';' dec_f_paramlist[$func.getHeader()] dcllist[new ArrayList<Constant>(), $func.getLocalVariables()] sentlist[$beginId.text] {
-        $func.setBlock($sentlist.body);
-    } returnId=IDENT '=' exp {$func.getBlock().addSentence(new Sentence("return " + $exp.code + ";"));} ';' 'END' 'FUNCTION' endId=IDENT {
+codfun[Program p] : 'FUNCTION' beginId=IDENT {
+        Function func = $p.getFunction($beginId.text);
+    }'(' {Header dummy = new Header("dummy");} nomparamlist_init[dummy] ')' tipo '::' IDENT
+    ';' dec_f_paramlist[dummy] dcllist[new ArrayList<Constant>(), func.getLocalVariables()] sentlist[$p, $beginId.text, func.getHeader()] {
+        func.setBlock($sentlist.body);
+    } returnId=IDENT '=' exp[func.getHeader()] {func.getBlock().addSentence(new Sentence("return " + $exp.code + ";"));} ';' 'END' 'FUNCTION' endId=IDENT {
         if(!$beginId.text.equals($endId.text)){
             throw new SemanticException(
                     "Línea " + $endId.getLine() +

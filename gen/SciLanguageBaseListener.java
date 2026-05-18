@@ -311,6 +311,54 @@ public class SciLanguageBaseListener implements SciLanguageListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterFormal_paramlist_dummy(SciLanguageParser.Formal_paramlist_dummyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFormal_paramlist_dummy(SciLanguageParser.Formal_paramlist_dummyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNomparamlist_dummy(SciLanguageParser.Nomparamlist_dummyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNomparamlist_dummy(SciLanguageParser.Nomparamlist_dummyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNomparamlist_dummy2(SciLanguageParser.Nomparamlist_dummy2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNomparamlist_dummy2(SciLanguageParser.Nomparamlist_dummy2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDec_f_paramlist_dummy(SciLanguageParser.Dec_f_paramlist_dummyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDec_f_paramlist_dummy(SciLanguageParser.Dec_f_paramlist_dummyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDecfun(SciLanguageParser.DecfunContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -450,6 +498,30 @@ public class SciLanguageBaseListener implements SciLanguageListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSubpparamlist(SciLanguageParser.SubpparamlistContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterActual_params(SciLanguageParser.Actual_paramsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitActual_params(SciLanguageParser.Actual_paramsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterActual_params_tail(SciLanguageParser.Actual_params_tailContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitActual_params_tail(SciLanguageParser.Actual_params_tailContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

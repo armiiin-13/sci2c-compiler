@@ -1,5 +1,6 @@
 package entity.program;
 
+import entity.exception.SemanticException;
 import entity.routine.Body;
 import entity.routine.Function;
 import entity.routine.Header;
@@ -72,6 +73,16 @@ public class Program{
     public void setMain(Function main) {
         this.main = main;
     }
+
+    public Function getFunction(String name){
+        for(Function function: this.functions){
+            if (function.getHeader().getName().equals(name)){
+                return function;
+            }
+        }
+        return null;
+    }
+
     public void exportProgram(){
         String path = "src/file/output/" + this.name + ".c";
         try{

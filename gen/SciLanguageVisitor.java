@@ -161,6 +161,30 @@ public interface SciLanguageVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTipoparam(SciLanguageParser.TipoparamContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#formal_paramlist_dummy}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFormal_paramlist_dummy(SciLanguageParser.Formal_paramlist_dummyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#nomparamlist_dummy}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNomparamlist_dummy(SciLanguageParser.Nomparamlist_dummyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#nomparamlist_dummy2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNomparamlist_dummy2(SciLanguageParser.Nomparamlist_dummy2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#dec_f_paramlist_dummy}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDec_f_paramlist_dummy(SciLanguageParser.Dec_f_paramlist_dummyContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link SciLanguageParser#decfun}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -232,6 +256,18 @@ public interface SciLanguageVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSubpparamlist(SciLanguageParser.SubpparamlistContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#actual_params}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitActual_params(SciLanguageParser.Actual_paramsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#actual_params_tail}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitActual_params_tail(SciLanguageParser.Actual_params_tailContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SciLanguageParser#subproglist}.
 	 * @param ctx the parse tree
