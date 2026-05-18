@@ -1,4 +1,6 @@
-package entitiy;
+package entity.routine;
+
+import entity.statement.Sentence;
 
 import java.util.ArrayList;
 

@@ -1,9 +1,4 @@
-package entitiy;
-
-import util.Tuple;
-
-import java.util.ArrayList;
-import java.util.List;
+package entity.routine;
 
 public class Parameter {
     private String type;
@@ -36,38 +31,19 @@ public class Parameter {
     public void setValue(String value) {
         if (value == null) {
             this.value = null;
-            return;
-        }
 
-        // SOLO para char (cadenas)
-        if (type.startsWith("char")) {
-
-            // Caso: 'Hola'
-            if (value.startsWith("'") && value.endsWith("'")) {
-                String inner = value.substring(1, value.length() - 1);
-
-                // Manejar escapes de Fortran:
-                inner = inner.replace("''", "'");
-
-                // Escapar comillas dobles para C
-                inner = inner.replace("\"", "\\\"");
-
-                this.value = "\"" + inner + "\"";
-            }
-
-            // Caso: ya viene con comillas dobles
-            else if (value.startsWith("\"") && value.endsWith("\"")) {
-                String inner = value.substring(1, value.length() - 1);
-
-                inner = inner.replace("\"\"", "\""); // escape Fortran
-                inner = inner.replace("\"", "\\\"");
-
-                this.value = "\"" + inner + "\"";
-            }
-            else {
-                this.value = value;
-            }
-
+        } else if (type.startsWith("char")) {
+            this.value = toStrings(value);
+            this.type = "CONSTINT";
+        } else if (type.startsWith("b`")){
+            this.value = toBinary(value);
+            this.type = "CONSTINT";
+        } else if (type.startsWith("o`")){
+            this.value = toOctal(value);
+            this.type = "CONSTINT";
+        } else if (type.startsWith("z`")){
+            this.value = toHexadecimal(value);
+            this.type = "CONSTINT";
         } else {
             this.value = value;
         }
@@ -123,5 +99,48 @@ public class Parameter {
         StringBuilder sb = new StringBuilder();
         sb.append(this.name);
         return sb.toString();
+    }
+
+    private String toBinary(String s) {
+        String content = s.substring(2, s.length() - 1);
+        return "0b" + content;
+    }
+
+    private String toOctal(String s) {
+        String content = s.substring(2, s.length() - 1);
+        return "0o" + content;
+    }
+
+    private String toHexadecimal(String s) {
+        String content = s.substring(2, s.length() - 1);
+        return "0x" + content;
+    }
+
+    private String toStrings(String value) {
+        // Case: ''
+        if (value.startsWith("'") && value.endsWith("'")) {
+            String inner = value.substring(1, value.length() - 1);
+
+            // Manejar escapes de Fortran:
+            inner = inner.replace("''", "'");
+
+            // Escapar comillas dobles para C
+            inner = inner.replace("\"", "\\\"");
+
+            return "\"" + inner + "\"";
+        }
+
+        // Case: ""
+        else if (value.startsWith("\"") && value.endsWith("\"")) {
+            String inner = value.substring(1, value.length() - 1);
+
+            inner = inner.replace("\"\"", "\""); // escape Fortran
+            inner = inner.replace("\"", "\\\"");
+
+            return "\"" + inner + "\"";
+        }
+        else {
+            return value;
+        }
     }
 }

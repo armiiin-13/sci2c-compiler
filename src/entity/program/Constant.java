@@ -1,4 +1,4 @@
-package entitiy;
+package entity.program;
 
 public class Constant{
     private String value;

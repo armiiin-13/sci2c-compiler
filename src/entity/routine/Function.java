@@ -1,6 +1,6 @@
-package entitiy;
+package entity.routine;
 
-import util.Tuple;
+import entity.util.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -13,7 +13,7 @@ void main(void){
     char mensaje1[10] = "Hola", mensaje2[10] = "Mundo";
     contador = contador + 1;
     total = total + 45.6;
-    ImprimirMensaje("Bienvenido");
+    ImprimirMensaje('Bienvenido');
     promedio = total / 2.0;
 }
 

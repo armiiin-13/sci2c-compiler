@@ -2,8 +2,11 @@ grammar SciLanguage;
 
 // imports
 @header {
-    import entitiy.*;
-    import util.Tuple;
+    import entity.exception.*;
+    import entity.program.*;
+    import entity.routine.*;
+    import entity.statement.*;
+    import entity.util.Tuple;
 }
 
 // ------------ GRAMMAR RULES ------------
@@ -82,42 +85,61 @@ varlist2[List<Tuple<String, List<Parameter>>> variables, String type, List<Param
 init[String type, String name] returns [Parameter newParam]: '=' simpvalue { $newParam = new Parameter(type, name, $simpvalue.value); }
     | { $newParam = new Parameter(type, name); };
 
-decproc returns [Function function]: 'SUBROUTINE' IDENT {
-        $function = new Function(new Header("void", $IDENT.text), new Body());
-    } formal_paramlist[$function.getHeader()] dec_s_paramlist[$function.getHeader()] 'END' 'SUBROUTINE' IDENT;
+decproc returns [Function function]: 'SUBROUTINE' id1=IDENT {
+        $function = new Function(new Header("void", $id1.text), new Body());
+    } formal_paramlist[$function.getHeader()] dec_s_paramlist[$function.getHeader()] 'END' 'SUBROUTINE' id2=IDENT{
+        if (! $id1.text.equals($id2.text)) {
+            throw new SemanticException(
+                    "Línea " + $id2.getLine() +
+                    ": IDENT de apertura (" + $id1.text +
+                    ") distinto del IDENT de cierre (" + $id2.text + ")"
+                );
+        }
+    };
 formal_paramlist[Header header] : '(' nomparamlist_init[$header] ')' | ;
 nomparamlist_init[Header header] : IDENT {$header.addParam($IDENT.text);} nomparamlist[$header];
 nomparamlist[Header header] : ',' nomparamlist_init[$header] | ;
 dec_s_paramlist[Header header] : tipo ',' 'INTENT' '(' tipoparam ')' IDENT {
-        Parameter param = $header.getParam($IDENT.text);
+        Parameter param = $header.getParam($IDENT.text, $IDENT.getLine());
         param.setType($tipo.type);
         param.setPointer($tipoparam.value);
     }';' dec_s_paramlist[$header] | ;
 tipoparam returns [boolean value] : 'IN' {$value = false;}| 'OUT' {$value = true;}| 'INOUT'{$value = true;};
 
-decfun returns [Function function]: 'FUNCTION' IDENT {
-        $function = new Function(new Header($IDENT.text), new Body());
+decfun returns [Function function]: 'FUNCTION' id1=IDENT {
+        $function = new Function(new Header($id1.text), new Body());
     }'(' nomparamlist_init[$function.getHeader()] ')' tipo '::' IDENT {
         $function.getHeader().setType($tipo.type);
-    }';' dec_f_paramlist[$function.getHeader()] 'END' 'FUNCTION' IDENT;
+    }';' dec_f_paramlist[$function.getHeader()] 'END' 'FUNCTION' id2=IDENT {
+        if (! $id1.text.equals($id2.text)){
+            throw new SemanticException(
+                    "Línea " + $id2.getLine() +
+                    ": IDENT de apertura (" + $id1.text +
+                    ") distinto del IDENT de cierre (" + $id2.text + ")"
+                );
+        }
+    };
 dec_f_paramlist[Header header] : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';' {
-        Parameter param = $header.getParam($IDENT.text);
+        Parameter param = $header.getParam($IDENT.text, $IDENT.getLine());
         param.setType($tipo.type);
         param.setPointer($tipoparam.value);
     } dec_f_paramlist[$header]
-    | ;
+    | {
+        $header.checkIfNoTypeParam(_localctx.getStart().getLine());
+    };
 
 sent[String funcName] returns [Sentence s] :
     IDENT '=' exp ';' {
         if ($funcName != null && $IDENT.text.equals($funcName)) {
-            $s = new Sentence(null, "return " + $exp.code + ";");
+            $s = new Sentence("return " + $exp.code + ";");
         } else {
-            $s = new Sentence(null, $IDENT.text + " = " + $exp.code + ";");
+            $s = new Sentence($IDENT.text + " = " + $exp.code + ";");
         }
 
     } | proc_call ';' {
-        $s = new Sentence(null, $proc_call.code + ";");
-    } ;//| 'IF' '(' expcond ')' if_then | 'DO' do_body | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT';
+        $s = new Sentence($proc_call.code + ";");
+    } ;
+    // | 'IF' '(' expcond ')' if_then | 'DO' do_body | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT';
 exp  returns [String code] : factor exp2 {
     $code = $factor.code + $exp2.code;
 };
@@ -165,7 +187,11 @@ codproc returns [Function func] : 'SUBROUTINE' beginId=IDENT {
     } formal_paramlist[$func.getHeader()] dec_s_paramlist[$func.getHeader()] dcllist[new ArrayList<Constant>(), $func.getLocalVariables()] sentlist[null] {$func.setBlock($sentlist.body);}
     'END' 'SUBROUTINE' endId=IDENT {
         if(!$beginId.text.equals($endId.text)){
-            System.err.println("ERROR: nombres distintos");
+            throw new SemanticException(
+                "Línea " + $endId.getLine() +
+                ": IDENT de apertura (" + $beginId.text +
+                ") distinto del IDENT de cierre (" + $endId.text + ")"
+            );
         }
     };
 
@@ -177,9 +203,20 @@ codfun returns [Function func]  : 'FUNCTION' beginId=IDENT {
     }
     ';' dec_f_paramlist[$func.getHeader()] dcllist[new ArrayList<Constant>(), $func.getLocalVariables()] sentlist[$beginId.text] {
         $func.setBlock($sentlist.body);
-    } IDENT '=' exp {$func.getBlock().addSentence(new Sentence(null, "return " + $exp.code + ";"));} ';' 'END' 'FUNCTION' endId=IDENT {
+    } returnId=IDENT '=' exp {$func.getBlock().addSentence(new Sentence("return " + $exp.code + ";"));} ';' 'END' 'FUNCTION' endId=IDENT {
         if(!$beginId.text.equals($endId.text)){
-            System.err.println("ERROR: nombres distintos");
+            throw new SemanticException(
+                    "Línea " + $endId.getLine() +
+                    ": IDENT de apertura (" + $beginId.text +
+                    ") distinto del IDENT de cierre (" + $endId.text + ")"
+                );
+        }
+        if(! $returnId.text.equals($endId.text)){
+            throw new SemanticException(
+                    "Línea " + $returnId.getLine() +
+                    ": IDENT del valor de retorno (" + $returnId.text +
+                    ") distinto del IDENT de nombre de la función (" + $endId.text + ")"
+                );
         }
     };
 
@@ -203,8 +240,6 @@ etiquetas2 : listaetiqetas | ':' etiquetas3;
 etiquetas3 : simpvalue | ;
 listaetiqetas : ',' simpvalue listaetiqetas | ;
 */
-
-// ------------ KEYWORDS TOKENS ------------
 
 // ------------ GENERAL TOKENS ------------
 IDENT : LETTER IDENT_2 ;

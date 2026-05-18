@@ -1,6 +1,8 @@
-package entitiy;
+package entity.program;
 
-import util.Tuple;
+import entity.routine.Body;
+import entity.routine.Function;
+import entity.routine.Header;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -71,7 +73,7 @@ public class Program{
         this.main = main;
     }
     public void exportProgram(){
-        String path = "src/Output_Files/" + this.name + ".c";
+        String path = "src/file/output/" + this.name + ".c";
         try{
             FileWriter writer = new FileWriter(path);
             for (Constant constant : constants){

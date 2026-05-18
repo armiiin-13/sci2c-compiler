@@ -1,4 +1,6 @@
-package entitiy;
+package entity.routine;
+
+import entity.exception.SemanticException;
 
 import java.util.ArrayList;
 
@@ -24,13 +26,17 @@ public class Header{
         this.params.add(newParam);
     }
 
-    public Parameter getParam(String name){
+    public Parameter getParam(String name, int line){
         for(Parameter param: this.params){
             if (param.getName().equals(name)){
                 return param;
             }
         }
-        throw new IllegalArgumentException("Parameter not defined in " + this.name);
+        throw new SemanticException(
+            "Error semántico en la línea " + line +
+                    ": el parámetro '" + name +
+                    "' no ha sido declarado en la cabecera de la subrutina '" + this.name + "'."
+        );
     }
 
     public String getType() {
@@ -55,6 +61,19 @@ public class Header{
 
     public void setParams(ArrayList<Parameter> params) {
         this.params = params;
+    }
+
+    public void checkIfNoTypeParam(int line){
+        for (Parameter param : this.params){
+            if (param.getType() == null){
+                throw new SemanticException(
+                    "Error semántico en la línea " + line +
+                            ": el parámetro '" + param.getName() +
+                            "' declarado en la cabecera de la subrutina '" +
+                            this.name + "' debe tener un tipo declarado explícitamente."
+                );
+            }
+        }
     }
 
 

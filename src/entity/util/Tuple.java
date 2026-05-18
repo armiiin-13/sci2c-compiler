@@ -1,4 +1,4 @@
-package util;
+package entity.util;
 
 public class Tuple<T,L>{
     private T first;
