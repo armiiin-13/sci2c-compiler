@@ -64,7 +64,7 @@ public class For extends Sentence {
         sb.append(indent).append("for(").append(this.nameVariable).append("=").append(this.initValue).append(" ; ");
         sb.append(this.nameVariable).append("!=").append(this.endValue).append(" ; ");
         sb.append(this.nameVariable).append("=").append(this.nameVariable).append("+").append(this.increment).append("){\n");
-        String doubleIndent = indent + "  ";
+        String doubleIndent = indent + "\t";
         sb.append(this.forBody.toString(doubleIndent));
         sb.append(indent).append("}");
         return sb.toString();

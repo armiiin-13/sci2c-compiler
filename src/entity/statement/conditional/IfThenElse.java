@@ -37,9 +37,9 @@ public class IfThenElse extends Sentence {
     public String toString(String indent){
         StringBuilder sb = new StringBuilder();
         sb.append(indent).append("if (").append(this.getSentence()).append("){\n");
-        String doubleIndent = indent + "  ";
+        String doubleIndent = indent + "\t";
         sb.append(this.ifBody.toString(doubleIndent));
-        sb.append("\n").append(indent).append("}");
+        sb.append(indent).append("}");
         if (!this.elseBody.getSentences().isEmpty()){
             sb.append(" else {\n");
             sb.append(this.elseBody.toString(doubleIndent));
