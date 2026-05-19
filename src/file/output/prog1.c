@@ -23,7 +23,7 @@ void ImprimirMensaje(char texto[]){
 
 int Sumar(int a, int b){
     int suma;
-    suma = a + b;
+    suma = null + null;
     return suma;
 }
 

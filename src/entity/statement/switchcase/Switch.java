@@ -30,6 +30,11 @@ public class Switch extends Sentence {
         return (newCase);
     }
 
+    public SwitchCase addCase(SwitchCase newCase){
+        this.cases.add(newCase);
+        return (newCase);
+    }
+
     public SwitchCase getDefaultCase() {
         return defaultCase;
     }

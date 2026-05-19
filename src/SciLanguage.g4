@@ -145,7 +145,7 @@ dec_f_paramlist[Header header] : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';' {
         $header.checkIfNoTypeParam(_localctx.getStart().getLine(), _localctx.getStart().getCharPositionInLine(), errorManager);
     };
 
-sent[Program p, String funcName, Header funcHeader] returns [Sentence s] :
+sent[Program p, String funcName, Header funcHeader] returns [Sentence s] locals [Switch switchSentence] :
     IDENT '=' exp[funcHeader] ';' {
         if ($funcName != null && $IDENT.text.equals($funcName)) {
             $s = new Sentence("return " + $exp.code + ";");
@@ -171,8 +171,12 @@ sent[Program p, String funcName, Header funcHeader] returns [Sentence s] :
     | 'IF' '(' expcond[$funcHeader] ')' if_then[$p, $funcName, $funcHeader, $expcond.code] {
         $s = $if_then.s;
     }
-    | 'DO' do_body[$p, $funcName, $funcHeader] ;
-    //| 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT';
+    | 'DO' do_body[$p, $funcName, $funcHeader]
+    | 'SELECT' 'CASE' '(' exp[$funcHeader] ')' {
+        Switch switchSentence = new Switch($exp.code);
+    }casos[$p, $funcName, $funcHeader, $switchSentence] 'END' 'SELECT'{
+        s = switchSentence;
+    };
 exp[Header funcHeader]  returns [String code] : factor[funcHeader] exp2[funcHeader] {
     $code = $factor.code + $exp2.code;
 };
@@ -311,8 +315,8 @@ oplog returns [String code] :
     ;
 
 factorcond[Header funcHeader] returns [String code] :
-    exp[$funcHeader] opcomp exp[$funcHeader] {
-        $code = $exp(0).code + " " + $opcomp.code + " " + $exp(1).code;
+    e1=exp[$funcHeader] opcomp e2=exp[$funcHeader] {
+        $code = $e1.code + " " + $opcomp.code + " " + $e2.code;
     }
     | '(' expcond[$funcHeader] ')' {
         $code = "(" + $expcond.code + ")";
@@ -341,7 +345,7 @@ if_then[Program p, String funcName, Header funcHeader, String condition] returns
         $s = $then_else.s;
     };
 
-then_else[Program p, String funcName, Header funcHeader, String condition, Body ifBody] :
+then_else[Program p, String funcName, Header funcHeader, String condition, Body ifBody] returns [Sentece s]:
     'ENDIF' {
         IfThenElse ifSentence = new IfThenElse($condition);
         ifSentence.setIfBody($ifBody);
@@ -363,10 +367,10 @@ do_body[Program p, String funcName, Header funcHeader] returns [Sentence s]:
     | nameVariable=IDENT '=' dStart=doval ',' dEnd=doval (',' dInc=doval)? sentlist[$p, $funcName, $funcHeader] 'ENDDO'{
         String inc;
 
-        if ($dInc != null) {
+        if ($dInc.code != null) {
             inc = $dInc.code;
         } else {
-            inc = "1"; // valor por defecto
+            inc = "1";
         }
 
 
@@ -376,12 +380,53 @@ do_body[Program p, String funcName, Header funcHeader] returns [Sentence s]:
     };
 doval returns [String code] : NUM_INT_CONST {$code = $NUM_INT_CONST.text} | IDENT {$code = $IDENT.text};
 
-casos : 'CASE' casos2 | ;
-casos2 : '(' etiquetas ')' sentlist casos | 'DEFAULT' sentlist;
-etiquetas :  simpvalue etiquetas2 | ':' simpvalue;
-etiquetas2 : listaetiqetas | ':' etiquetas3;
-etiquetas3 : simpvalue | ;
-listaetiqetas : ',' simpvalue listaetiqetas | ;
+casos[Program p, String funcName, Header funcHeader, Switch switchSentence] :
+    'CASE' casos2[$p, $funcName, $funcHeader, $switchSentence] {
+    }
+    | ;
+casos2[Program p, String funcName, Header funcHeader, Switch switchSentence] :
+    '(' etiquetas ')' sentlist[$p, $funcName, $funcHeader] {
+        SwitchCase switchCase = new SwitchCase($etiquetas.code);
+        switchCase.setBody($sentlist.body);
+        $switchSentence.addCase(switchCase);
+    } casos[$p, $funcName, $funcHeader, $switchSentence]
+    | 'DEFAULT' sentlist[$p, $funcName, $funcHeader] {
+        $switchSentence.getDefaultCase().setBody($sentlist.body);
+    };
+
+etiquetas returns [String code]: simpvalue etiquetas2 {
+        if ($etiquetas2.code.equals(" to_empty")) {
+            $code = "case > " + $simpvalue.value;
+        } else {
+            $code = "case " + $simpvalue.value + $etiquetas2.code;
+        }
+    }
+    | ':' simpvalue {
+        $code = "case < " + $simpvalue.value;
+    };
+
+
+etiquetas2 returns [String code]: listaetiquetas {
+        $code = $listaetiquetas.code;
+    }
+    | ':' etiquetas3 {
+        if ($etiquetas3.code.equals(""))
+            $code = "to_empty";
+        else
+            $code = " to " + $etiquetas3.code;
+    };
+etiquetas3 returns [String code] : simpvalue {
+        $code = $simpvalue.value;
+    }
+    | {
+        $code = "";
+    };
+listaetiquetas returns [String code] : ',' simpvalue listaetiquetas {
+        $code = " , case " + $simpvalue.value + $listaetiquetas.code;
+    }
+    | {
+        $code = "";
+    };
 
 // ------------ GENERAL TOKENS ------------
 IDENT : LETTER IDENT_2 ;
