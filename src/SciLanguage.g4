@@ -170,8 +170,9 @@ sent[Program p, String funcName, Header funcHeader] returns [Sentence s] :
     }
     | 'IF' '(' expcond[$funcHeader] ')' if_then[$p, $funcName, $funcHeader, $expcond.code] {
         $s = $if_then.s;
-    };
-    // | 'DO' do_body | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT';
+    }
+    | 'DO' do_body[$p, $funcName, $funcHeader] ;
+    //| 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT';
 exp[Header funcHeader]  returns [String code] : factor[funcHeader] exp2[funcHeader] {
     $code = $factor.code + $exp2.code;
 };
@@ -353,8 +354,27 @@ then_else[Program p, String funcName, Header funcHeader, String condition, Body 
         $s = ifSentence;
     };
 
-do_body : 'WHILE' '(' expcond ')' sentlist 'ENDDO' | IDENT '=' doval ',' doval ',' doval sentlist 'ENDDO';
-doval : NUM_INT_CONST | IDENT;
+do_body[Program p, String funcName, Header funcHeader] returns [Sentence s]:
+    'WHILE' '(' expcond[$funcHeader] ')' sentlist[$p, $funcName, $funcHeader] 'ENDDO' {
+        While whileSentence = new While($expcond.code);
+        whileSentence.setWhileBody($sentlist.body);
+        $s = whileSentence;
+    }
+    | nameVariable=IDENT '=' dStart=doval ',' dEnd=doval (',' dInc=doval)? sentlist[$p, $funcName, $funcHeader] 'ENDDO'{
+        String inc;
+
+        if ($dInc != null) {
+            inc = $dInc.code;
+        } else {
+            inc = "1"; // valor por defecto
+        }
+
+
+        For forSentence = new For($nameVariable.text, dStart, dEnd, inc);
+        forSentence.setBody($sentlist.body);
+        $s = forSentence;
+    };
+doval returns [String code] : NUM_INT_CONST {$code = $NUM_INT_CONST.text} | IDENT {$code = $IDENT.text};
 
 casos : 'CASE' casos2 | ;
 casos2 : '(' etiquetas ')' sentlist casos | 'DEFAULT' sentlist;
