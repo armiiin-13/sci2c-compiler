@@ -1,4 +1,4 @@
-package entity.exception;
+package entity.error;
 
 public class SemanticException extends RuntimeException {
     public SemanticException(String message) {

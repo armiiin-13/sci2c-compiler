@@ -1,6 +1,6 @@
 // Generated from C:/Users/armii/Documents/Universidad/Procesadores_Lenguajes/Compiler_Sci2C/sci2c-compiler/src/SciLanguage.g4 by ANTLR 4.13.2
 
-    import entity.exception.*;
+    import entity.error.*;
     import entity.program.*;
     import entity.routine.*;
     import entity.statement.*;
@@ -118,6 +118,13 @@ public class SciLanguageParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
+
+	    private ErrorManager errorManager;
+
+	    public void setErrorManager(ErrorManager errorManager) {
+	        this.errorManager = errorManager;
+	    }
+
 	public SciLanguageParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
@@ -195,7 +202,7 @@ public class SciLanguageParser extends Parser {
 			((PrgContext)_localctx).IDENT = match(IDENT);
 			setState(101);
 			subproglist(_localctx.p);
-			_localctx.p.exportProgram();
+			_localctx.p.exportProgram(errorManager);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1508,11 +1515,11 @@ public class SciLanguageParser extends Parser {
 			((DecprocContext)_localctx).id2 = match(IDENT);
 
 			        if (! (((DecprocContext)_localctx).id1!=null?((DecprocContext)_localctx).id1.getText():null).equals((((DecprocContext)_localctx).id2!=null?((DecprocContext)_localctx).id2.getText():null))) {
-			            throw new SemanticException(
-			                    "Línea " + ((DecprocContext)_localctx).id2.getLine() +
-			                    ": IDENT de apertura (" + (((DecprocContext)_localctx).id1!=null?((DecprocContext)_localctx).id1.getText():null) +
-			                    ") distinto del IDENT de cierre (" + (((DecprocContext)_localctx).id2!=null?((DecprocContext)_localctx).id2.getText():null) + ")"
-			                );
+			            errorManager.addError(
+			                ((DecprocContext)_localctx).id2.getLine(),
+			                ((DecprocContext)_localctx).id2.getCharPositionInLine(),
+			                "IDENT de apertura (" + (((DecprocContext)_localctx).id1!=null?((DecprocContext)_localctx).id1.getText():null) + ") distinto del IDENT de cierre (" + (((DecprocContext)_localctx).id2!=null?((DecprocContext)_localctx).id2.getText():null) + ")"
+			            );
 			        }
 			    
 			}
@@ -1776,9 +1783,11 @@ public class SciLanguageParser extends Parser {
 				setState(265);
 				((Dec_s_paramlistContext)_localctx).IDENT = match(IDENT);
 
-				        Parameter param = _localctx.header.getParam((((Dec_s_paramlistContext)_localctx).IDENT!=null?((Dec_s_paramlistContext)_localctx).IDENT.getText():null), ((Dec_s_paramlistContext)_localctx).IDENT.getLine());
-				        param.setType(((Dec_s_paramlistContext)_localctx).tipo.type);
-				        param.setPointer(((Dec_s_paramlistContext)_localctx).tipoparam.value);
+				        Parameter param = _localctx.header.getParam((((Dec_s_paramlistContext)_localctx).IDENT!=null?((Dec_s_paramlistContext)_localctx).IDENT.getText():null), ((Dec_s_paramlistContext)_localctx).IDENT.getLine(), ((Dec_s_paramlistContext)_localctx).IDENT.getCharPositionInLine(), errorManager);
+				        if (param != null){
+				            param.setType(((Dec_s_paramlistContext)_localctx).tipo.type);
+				            param.setPointer(((Dec_s_paramlistContext)_localctx).tipoparam.value);
+				        }
 				    
 				setState(267);
 				match(T__1);
@@ -2208,11 +2217,11 @@ public class SciLanguageParser extends Parser {
 			((DecfunContext)_localctx).id2 = match(IDENT);
 
 			        if (! (((DecfunContext)_localctx).id1!=null?((DecfunContext)_localctx).id1.getText():null).equals((((DecfunContext)_localctx).id2!=null?((DecfunContext)_localctx).id2.getText():null))){
-			            throw new SemanticException(
-			                    "Línea " + ((DecfunContext)_localctx).id2.getLine() +
-			                    ": IDENT de apertura (" + (((DecfunContext)_localctx).id1!=null?((DecfunContext)_localctx).id1.getText():null) +
-			                    ") distinto del IDENT de cierre (" + (((DecfunContext)_localctx).id2!=null?((DecfunContext)_localctx).id2.getText():null) + ")"
-			                );
+			            errorManager.addError(
+			                ((DecfunContext)_localctx).id2.getLine(),
+			                ((DecfunContext)_localctx).id2.getCharPositionInLine(),
+			                "IDENT de apertura (" + (((DecfunContext)_localctx).id1!=null?((DecfunContext)_localctx).id1.getText():null) + ") distinto del IDENT de cierre (" + (((DecfunContext)_localctx).id2!=null?((DecfunContext)_localctx).id2.getText():null) + ")"
+			            );
 			        }
 			    
 			}
@@ -2292,9 +2301,11 @@ public class SciLanguageParser extends Parser {
 				setState(334);
 				match(T__1);
 
-				        Parameter param = _localctx.header.getParam((((Dec_f_paramlistContext)_localctx).IDENT!=null?((Dec_f_paramlistContext)_localctx).IDENT.getText():null), ((Dec_f_paramlistContext)_localctx).IDENT.getLine());
-				        param.setType(((Dec_f_paramlistContext)_localctx).tipo.type);
-				        param.setPointer(((Dec_f_paramlistContext)_localctx).tipoparam.value);
+				        Parameter param = _localctx.header.getParam((((Dec_f_paramlistContext)_localctx).IDENT!=null?((Dec_f_paramlistContext)_localctx).IDENT.getText():null), ((Dec_f_paramlistContext)_localctx).IDENT.getLine(), ((Dec_f_paramlistContext)_localctx).IDENT.getCharPositionInLine(), errorManager);
+				        if (param != null){
+				            param.setType(((Dec_f_paramlistContext)_localctx).tipo.type);
+				            param.setPointer(((Dec_f_paramlistContext)_localctx).tipoparam.value);
+				        }
 				    
 				setState(336);
 				dec_f_paramlist(_localctx.header);
@@ -2304,7 +2315,7 @@ public class SciLanguageParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 
-				        _localctx.header.checkIfNoTypeParam(_localctx.getStart().getLine());
+				        _localctx.header.checkIfNoTypeParam(_localctx.getStart().getLine(), _localctx.getStart().getCharPositionInLine(), errorManager);
 				    
 				}
 				break;
@@ -2382,10 +2393,17 @@ public class SciLanguageParser extends Parser {
 				        if (_localctx.funcName != null && (((SentContext)_localctx).IDENT!=null?((SentContext)_localctx).IDENT.getText():null).equals(_localctx.funcName)) {
 				            ((SentContext)_localctx).s =  new Sentence("return " + ((SentContext)_localctx).exp.code + ";");
 				        } else {
-				            String left = _localctx.funcHeader != null && _localctx.funcHeader.isParameter((((SentContext)_localctx).IDENT!=null?((SentContext)_localctx).IDENT.getText():null)) &&
-				                _localctx.funcHeader.getParam((((SentContext)_localctx).IDENT!=null?((SentContext)_localctx).IDENT.getText():null),((SentContext)_localctx).IDENT.getLine()).isPointer()
-				                        ? "*" + (((SentContext)_localctx).IDENT!=null?((SentContext)_localctx).IDENT.getText():null)
-				                        : (((SentContext)_localctx).IDENT!=null?((SentContext)_localctx).IDENT.getText():null);
+				            String left;
+				            if (_localctx.funcHeader != null && _localctx.funcHeader.isParameter((((SentContext)_localctx).IDENT!=null?((SentContext)_localctx).IDENT.getText():null))){
+				                Parameter param = _localctx.funcHeader.getParam((((SentContext)_localctx).IDENT!=null?((SentContext)_localctx).IDENT.getText():null),((SentContext)_localctx).IDENT.getLine(), ((SentContext)_localctx).IDENT.getCharPositionInLine(), errorManager);
+				                if (param != null && param.isPointer()){
+				                    left = "*" + (((SentContext)_localctx).IDENT!=null?((SentContext)_localctx).IDENT.getText():null);
+				                } else {
+				                    left = (((SentContext)_localctx).IDENT!=null?((SentContext)_localctx).IDENT.getText():null);
+				                }
+				            } else {
+				                left = (((SentContext)_localctx).IDENT!=null?((SentContext)_localctx).IDENT.getText():null);
+				            }
 
 				            ((SentContext)_localctx).s =  new Sentence(left + " = " + ((SentContext)_localctx).exp.code + ";");
 				        }
@@ -2745,9 +2763,11 @@ public class SciLanguageParser extends Parser {
 				((FactorContext)_localctx).factor2 = factor2(funcHeader);
 
 				    String name = (((FactorContext)_localctx).IDENT!=null?((FactorContext)_localctx).IDENT.getText():null);
-				    if (_localctx.funcHeader != null && _localctx.funcHeader.isParameter((((FactorContext)_localctx).IDENT!=null?((FactorContext)_localctx).IDENT.getText():null)) &&
-				        _localctx.funcHeader.getParam((((FactorContext)_localctx).IDENT!=null?((FactorContext)_localctx).IDENT.getText():null),((FactorContext)_localctx).IDENT.getLine()).isPointer() && ((FactorContext)_localctx).factor2.code.equals("")) {
+				    if (_localctx.funcHeader != null && _localctx.funcHeader.isParameter((((FactorContext)_localctx).IDENT!=null?((FactorContext)_localctx).IDENT.getText():null))){
+				        Parameter param = _localctx.funcHeader.getParam((((FactorContext)_localctx).IDENT!=null?((FactorContext)_localctx).IDENT.getText():null),((FactorContext)_localctx).IDENT.getLine(), ((FactorContext)_localctx).IDENT.getCharPositionInLine(), errorManager);
+				        if (param != null && param.isPointer() && ((FactorContext)_localctx).factor2.code.equals("")){
 				            ((FactorContext)_localctx).code =  "*" + name;
+				        }
 				    } else {
 				        ((FactorContext)_localctx).code =  name + ((FactorContext)_localctx).factor2.code;
 				    }
@@ -3372,10 +3392,10 @@ public class SciLanguageParser extends Parser {
 			((CodprocContext)_localctx).endId = match(IDENT);
 
 			        if(!(((CodprocContext)_localctx).beginId!=null?((CodprocContext)_localctx).beginId.getText():null).equals((((CodprocContext)_localctx).endId!=null?((CodprocContext)_localctx).endId.getText():null))){
-			            throw new SemanticException(
-			                "Línea " + ((CodprocContext)_localctx).endId.getLine() +
-			                ": IDENT de apertura (" + (((CodprocContext)_localctx).beginId!=null?((CodprocContext)_localctx).beginId.getText():null) +
-			                ") distinto del IDENT de cierre (" + (((CodprocContext)_localctx).endId!=null?((CodprocContext)_localctx).endId.getText():null) + ")"
+			            errorManager.addError(
+			                ((CodprocContext)_localctx).endId.getLine(),
+			                ((CodprocContext)_localctx).endId.getCharPositionInLine(),
+			                "IDENT de apertura (" + (((CodprocContext)_localctx).beginId!=null?((CodprocContext)_localctx).beginId.getText():null) + ") distinto del IDENT de cierre (" + (((CodprocContext)_localctx).endId!=null?((CodprocContext)_localctx).endId.getText():null) + ")"
 			            );
 			        }
 			    
@@ -3497,18 +3517,18 @@ public class SciLanguageParser extends Parser {
 			((CodfunContext)_localctx).endId = match(IDENT);
 
 			        if(!(((CodfunContext)_localctx).beginId!=null?((CodfunContext)_localctx).beginId.getText():null).equals((((CodfunContext)_localctx).endId!=null?((CodfunContext)_localctx).endId.getText():null))){
-			            throw new SemanticException(
-			                    "Línea " + ((CodfunContext)_localctx).endId.getLine() +
-			                    ": IDENT de apertura (" + (((CodfunContext)_localctx).beginId!=null?((CodfunContext)_localctx).beginId.getText():null) +
-			                    ") distinto del IDENT de cierre (" + (((CodfunContext)_localctx).endId!=null?((CodfunContext)_localctx).endId.getText():null) + ")"
-			                );
+			            errorManager.addError(
+			                ((CodfunContext)_localctx).endId.getLine(),
+			                ((CodfunContext)_localctx).endId.getCharPositionInLine(),
+			                "IDENT de apertura (" + (((CodfunContext)_localctx).beginId!=null?((CodfunContext)_localctx).beginId.getText():null) + ") distinto del IDENT de cierre (" + (((CodfunContext)_localctx).endId!=null?((CodfunContext)_localctx).endId.getText():null) + ")"
+			            );
 			        }
 			        if(! (((CodfunContext)_localctx).returnId!=null?((CodfunContext)_localctx).returnId.getText():null).equals((((CodfunContext)_localctx).endId!=null?((CodfunContext)_localctx).endId.getText():null))){
-			            throw new SemanticException(
-			                    "Línea " + ((CodfunContext)_localctx).returnId.getLine() +
-			                    ": IDENT del valor de retorno (" + (((CodfunContext)_localctx).returnId!=null?((CodfunContext)_localctx).returnId.getText():null) +
-			                    ") distinto del IDENT de nombre de la función (" + (((CodfunContext)_localctx).endId!=null?((CodfunContext)_localctx).endId.getText():null) + ")"
-			                );
+			            errorManager.addError(
+			                ((CodfunContext)_localctx).returnId.getLine(),
+			                ((CodfunContext)_localctx).returnId.getCharPositionInLine(),
+			                "IDENT del valor de retorno (" + (((CodfunContext)_localctx).returnId!=null?((CodfunContext)_localctx).returnId.getText():null) + ") distinto del IDENT de nombre de la función (" + (((CodfunContext)_localctx).endId!=null?((CodfunContext)_localctx).endId.getText():null) + ")"
+			            );
 			        }
 			    
 			}

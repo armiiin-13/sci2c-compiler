@@ -2,11 +2,19 @@ grammar SciLanguage;
 
 // imports
 @header {
-    import entity.exception.*;
+    import entity.error.*;
     import entity.program.*;
     import entity.routine.*;
     import entity.statement.*;
     import entity.util.Tuple;
+}
+
+@parser::members {
+    private ErrorManager errorManager;
+
+    public void setErrorManager(ErrorManager errorManager) {
+        this.errorManager = errorManager;
+    }
 }
 
 // ------------ GRAMMAR RULES ------------
@@ -15,7 +23,7 @@ prg returns [Program p]: 'PROGRAM' IDENT ';' {
        }
        dcllist[$p.getConstants(), $p.getMain().getLocalVariables()] cabecera[$p.getFunctions()] sentlist[$p, null,null]{
             $p.getMain().setBlock($sentlist.body);
-       } 'END' 'PROGRAM' IDENT subproglist[$p] {$p.exportProgram();};
+       } 'END' 'PROGRAM' IDENT subproglist[$p] {$p.exportProgram(errorManager);};
 
 dcllist[List<Constant> constants, List<Tuple<String, List<Parameter>>> variables] : dcl[$constants, $variables] dcllist[$constants, $variables] | ;
 cabecera[List<Function> functions] : 'INTERFACE' cablist[$functions] 'END' 'INTERFACE' | ;
@@ -89,20 +97,22 @@ decproc returns [Function function]: 'SUBROUTINE' id1=IDENT {
         $function = new Function(new Header("void", $id1.text), new Body());
     } formal_paramlist[$function.getHeader()] dec_s_paramlist[$function.getHeader()] 'END' 'SUBROUTINE' id2=IDENT{
         if (! $id1.text.equals($id2.text)) {
-            throw new SemanticException(
-                    "Línea " + $id2.getLine() +
-                    ": IDENT de apertura (" + $id1.text +
-                    ") distinto del IDENT de cierre (" + $id2.text + ")"
-                );
+            errorManager.addError(
+                $id2.getLine(),
+                $id2.getCharPositionInLine(),
+                "IDENT de apertura (" + $id1.text + ") distinto del IDENT de cierre (" + $id2.text + ")"
+            );
         }
     };
 formal_paramlist[Header header] : '(' nomparamlist_init[$header] ')' | ;
 nomparamlist_init[Header header] : IDENT {$header.addParam($IDENT.text);} nomparamlist[$header];
 nomparamlist[Header header] : ',' nomparamlist_init[$header] | ;
 dec_s_paramlist[Header header] : tipo ',' 'INTENT' '(' tipoparam ')' IDENT {
-        Parameter param = $header.getParam($IDENT.text, $IDENT.getLine());
-        param.setType($tipo.type);
-        param.setPointer($tipoparam.value);
+        Parameter param = $header.getParam($IDENT.text, $IDENT.getLine(), $IDENT.getCharPositionInLine(), errorManager);
+        if (param != null){
+            param.setType($tipo.type);
+            param.setPointer($tipoparam.value);
+        }
     }';' dec_s_paramlist[$header] | ;
 tipoparam returns [boolean value] : 'IN' {$value = false;}| 'OUT' {$value = true;}| 'INOUT'{$value = true;};
 
@@ -117,20 +127,22 @@ decfun returns [Function function]: 'FUNCTION' id1=IDENT {
         $function.getHeader().setType($tipo.type);
     }';' dec_f_paramlist[$function.getHeader()] 'END' 'FUNCTION' id2=IDENT {
         if (! $id1.text.equals($id2.text)){
-            throw new SemanticException(
-                    "Línea " + $id2.getLine() +
-                    ": IDENT de apertura (" + $id1.text +
-                    ") distinto del IDENT de cierre (" + $id2.text + ")"
-                );
+            errorManager.addError(
+                $id2.getLine(),
+                $id2.getCharPositionInLine(),
+                "IDENT de apertura (" + $id1.text + ") distinto del IDENT de cierre (" + $id2.text + ")"
+            );
         }
     };
 dec_f_paramlist[Header header] : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';' {
-        Parameter param = $header.getParam($IDENT.text, $IDENT.getLine());
-        param.setType($tipo.type);
-        param.setPointer($tipoparam.value);
+        Parameter param = $header.getParam($IDENT.text, $IDENT.getLine(), $IDENT.getCharPositionInLine(), errorManager);
+        if (param != null){
+            param.setType($tipo.type);
+            param.setPointer($tipoparam.value);
+        }
     } dec_f_paramlist[$header]
     | {
-        $header.checkIfNoTypeParam(_localctx.getStart().getLine());
+        $header.checkIfNoTypeParam(_localctx.getStart().getLine(), _localctx.getStart().getCharPositionInLine(), errorManager);
     };
 
 sent[Program p, String funcName, Header funcHeader] returns [Sentence s] :
@@ -138,10 +150,17 @@ sent[Program p, String funcName, Header funcHeader] returns [Sentence s] :
         if ($funcName != null && $IDENT.text.equals($funcName)) {
             $s = new Sentence("return " + $exp.code + ";");
         } else {
-            String left = $funcHeader != null && $funcHeader.isParameter($IDENT.text) &&
-                $funcHeader.getParam($IDENT.text,$IDENT.getLine()).isPointer()
-                        ? "*" + $IDENT.text
-                        : $IDENT.text;
+            String left;
+            if ($funcHeader != null && $funcHeader.isParameter($IDENT.text)){
+                Parameter param = $funcHeader.getParam($IDENT.text,$IDENT.getLine(), $IDENT.getCharPositionInLine(), errorManager);
+                if (param != null && param.isPointer()){
+                    left = "*" + $IDENT.text;
+                } else {
+                    left = $IDENT.text;
+                }
+            } else {
+                left = $IDENT.text;
+            }
 
             $s = new Sentence(left + " = " + $exp.code + ";");
         }
@@ -168,9 +187,11 @@ factor[Header funcHeader] returns [String code] : simpvalue {
     $code = "(" + $exp.code + ")";
 } | IDENT factor2[funcHeader] {
     String name = $IDENT.text;
-    if ($funcHeader != null && $funcHeader.isParameter($IDENT.text) &&
-        $funcHeader.getParam($IDENT.text,$IDENT.getLine()).isPointer() && $factor2.code.equals("")) {
+    if ($funcHeader != null && $funcHeader.isParameter($IDENT.text)){
+        Parameter param = $funcHeader.getParam($IDENT.text,$IDENT.getLine(), $IDENT.getCharPositionInLine(), errorManager);
+        if (param != null && param.isPointer() && $factor2.code.equals("")){
             $code = "*" + name;
+        }
     } else {
         $code = name + $factor2.code;
     }
@@ -233,10 +254,10 @@ codproc[Program p]: 'SUBROUTINE' beginId=IDENT {
     } formal_paramlist_dummy dec_f_paramlist_dummy dcllist[new ArrayList<Constant>(), func.getLocalVariables()] sentlist[$p, null,func.getHeader()] {func.setBlock($sentlist.body);}
     'END' 'SUBROUTINE' endId=IDENT {
         if(!$beginId.text.equals($endId.text)){
-            throw new SemanticException(
-                "Línea " + $endId.getLine() +
-                ": IDENT de apertura (" + $beginId.text +
-                ") distinto del IDENT de cierre (" + $endId.text + ")"
+            errorManager.addError(
+                $endId.getLine(),
+                $endId.getCharPositionInLine(),
+                "IDENT de apertura (" + $beginId.text + ") distinto del IDENT de cierre (" + $endId.text + ")"
             );
         }
     };
@@ -248,18 +269,18 @@ codfun[Program p] : 'FUNCTION' beginId=IDENT {
         func.setBlock($sentlist.body);
     } returnId=IDENT '=' exp[func.getHeader()] {func.getBlock().addSentence(new Sentence("return " + $exp.code + ";"));} ';' 'END' 'FUNCTION' endId=IDENT {
         if(!$beginId.text.equals($endId.text)){
-            throw new SemanticException(
-                    "Línea " + $endId.getLine() +
-                    ": IDENT de apertura (" + $beginId.text +
-                    ") distinto del IDENT de cierre (" + $endId.text + ")"
-                );
+            errorManager.addError(
+                $endId.getLine(),
+                $endId.getCharPositionInLine(),
+                "IDENT de apertura (" + $beginId.text + ") distinto del IDENT de cierre (" + $endId.text + ")"
+            );
         }
         if(! $returnId.text.equals($endId.text)){
-            throw new SemanticException(
-                    "Línea " + $returnId.getLine() +
-                    ": IDENT del valor de retorno (" + $returnId.text +
-                    ") distinto del IDENT de nombre de la función (" + $endId.text + ")"
-                );
+            errorManager.addError(
+                $returnId.getLine(),
+                $returnId.getCharPositionInLine(),
+                "IDENT del valor de retorno (" + $returnId.text + ") distinto del IDENT de nombre de la función (" + $endId.text + ")"
+            );
         }
     };
 

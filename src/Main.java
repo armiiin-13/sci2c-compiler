@@ -1,4 +1,8 @@
 import java.io.*;
+
+import entity.error.ErrorListener;
+import entity.error.ErrorManager;
+import entity.error.ErrorRecuperationStrategy;
 import org.antlr.v4.runtime.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -11,6 +15,16 @@ public class Main {
             SciLanguageLexer analex = new SciLanguageLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(analex);
             SciLanguageParser anasint = new SciLanguageParser(tokens);
+
+            ErrorManager errorManager = new ErrorManager();
+            ErrorListener listener = new ErrorListener(errorManager);
+            analex.removeErrorListeners();
+            anasint.removeErrorListeners();
+            analex.addErrorListener(listener);
+            anasint.addErrorListener(listener);
+            anasint.setErrorManager(errorManager);
+            anasint.setErrorHandler(new ErrorRecuperationStrategy());
+
             anasint.prg();
         } catch (org.antlr.v4.runtime.RecognitionException e) {
             System.err.println("REC " + e.getMessage()); // input error

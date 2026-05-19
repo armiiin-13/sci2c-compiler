@@ -1,6 +1,6 @@
 // Generated from C:/Users/armii/Documents/Universidad/Procesadores_Lenguajes/Compiler_Sci2C/sci2c-compiler/src/SciLanguage.g4 by ANTLR 4.13.2
 
-    import entity.exception.*;
+    import entity.error.*;
     import entity.program.*;
     import entity.routine.*;
     import entity.statement.*;

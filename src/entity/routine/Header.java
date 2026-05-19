@@ -1,6 +1,7 @@
 package entity.routine;
 
-import entity.exception.SemanticException;
+import entity.error.ErrorManager;
+import entity.error.SemanticException;
 
 import java.util.ArrayList;
 
@@ -26,17 +27,14 @@ public class Header{
         this.params.add(newParam);
     }
 
-    public Parameter getParam(String name, int line){
+    public Parameter getParam(String name, int line, int column, ErrorManager errorManager){
         for(Parameter param: this.params){
             if (param.getName().equals(name)){
                 return param;
             }
         }
-        throw new SemanticException(
-            "Error semántico en la línea " + line +
-                    ": el parámetro '" + name +
-                    "' no ha sido declarado en la cabecera de la subrutina '" + this.name + "'."
-        );
+        errorManager.addError(Integer.toString(line), Integer.toString(column), "No ha sido declarado en la cabecera de la subrutina '" + this.name + "'.");
+        return null;
     }
 
     public String getType() {
@@ -63,15 +61,12 @@ public class Header{
         this.params = params;
     }
 
-    public void checkIfNoTypeParam(int line){
+    public void checkIfNoTypeParam(int line, int column, ErrorManager errorManager){
         for (Parameter param : this.params){
             if (param.getType() == null){
-                throw new SemanticException(
-                    "Error semántico en la línea " + line +
-                            ": el parámetro '" + param.getName() +
-                            "' declarado en la cabecera de la subrutina '" +
-                            this.name + "' debe tener un tipo declarado explícitamente."
-                );
+                errorManager.addError(Integer.toString(line), Integer.toString(column), "El parámetro '" + param.getName() +
+                "' declarado en la cabecera de la subrutina '" +
+                        this.name + "' debe tener un tipo declarado explícitamente.");
             }
         }
     }

@@ -1,6 +1,6 @@
 package entity.program;
 
-import entity.exception.SemanticException;
+import entity.error.ErrorManager;
 import entity.routine.Body;
 import entity.routine.Function;
 import entity.routine.Header;
@@ -83,7 +83,12 @@ public class Program{
         return null;
     }
 
-    public void exportProgram(){
+    public void exportProgram(ErrorManager errorManager){
+        if (errorManager.hasErrors()){
+            errorManager.printErrors();
+            return;
+        }
+
         String path = "src/file/output/" + this.name + ".c";
         try{
             FileWriter writer = new FileWriter(path);
