@@ -85,7 +85,7 @@ public class Header{
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(type).append(" ").append(name).append("(");
+        sb.append(type).append(" ").append(name).append(" (");
 
         if (params.isEmpty()){
             sb.append("void");
