@@ -193,8 +193,7 @@ proc_call[Program p] returns [String code] : 'CALL' IDENT {
 }subpparamlist[funcHeader] {
     $code = $IDENT.text + $subpparamlist.code;
 };
-subpparamlist[Header funcHeader] returns [String code]
-    : '(' actual_params[funcHeader, 0] ')' {
+subpparamlist[Header funcHeader] returns [String code] : '(' actual_params[funcHeader, 0] ')' {
         $code = "(" + $actual_params.code + ")";
     }
     | {
