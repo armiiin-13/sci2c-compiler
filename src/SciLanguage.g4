@@ -147,7 +147,7 @@ dec_f_paramlist[Header header] : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';' {
         $header.checkIfNoTypeParam(_localctx.getStart().getLine(), _localctx.getStart().getCharPositionInLine(), errorManager);
     };
 
-sent[Program p, String funcName, Header funcHeader] returns [Sentence s] locals [Switch switchSentence] :
+sent[Program p, String funcName, Header funcHeader] returns [Sentence s] :
     IDENT '=' exp[funcHeader] ';' {
         if ($funcName != null && $IDENT.text.equals($funcName)) {
             $s = new Sentence("return " + $exp.code + ";");
@@ -173,10 +173,12 @@ sent[Program p, String funcName, Header funcHeader] returns [Sentence s] locals 
     | 'IF' '(' expcond[$funcHeader] ')' if_then[$p, $funcName, $funcHeader, $expcond.code] {
         $s = $if_then.s;
     }
-    | 'DO' do_body[$p, $funcName, $funcHeader]
+    | 'DO' do_body[$p, $funcName, $funcHeader] {
+        $s = $do_body.s;
+    }
     | 'SELECT' 'CASE' '(' exp[$funcHeader] ')' {
         Switch switchSentence = new Switch($exp.code);
-    }casos[$p, $funcName, $funcHeader, $switchSentence] 'END' 'SELECT'{
+    }casos[$p, $funcName, $funcHeader, switchSentence] 'END' 'SELECT'{
         $s = switchSentence;
     };
 exp[Header funcHeader]  returns [String code] : factor[funcHeader] exp2[funcHeader] {
