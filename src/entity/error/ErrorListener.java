@@ -27,7 +27,7 @@ public class ErrorListener extends BaseErrorListener {
         Token token = (Token) offendingSymbol;
 
         errorManager.addError(
-                " ERROR SINTÁCTICO",
+                "ERROR SINTÁCTICO",
                 token,
                 "Error cerca de '" + token.getText() + "': " + msg
         );

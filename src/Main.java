@@ -25,7 +25,14 @@ public class Main {
             anasint.setErrorManager(errorManager);
             anasint.setErrorHandler(new ErrorRecuperationStrategy());
 
-            anasint.prg();
+            try {
+                anasint.prg();
+            } catch (Exception e) {
+                errorManager.addError("ERROR SINTÁCTICO",
+                        "El programa contiene una construcción no válida. Revisa comillas, paréntesis, " +
+                                "ENDs y puntos y coma.");
+                errorManager.printErrors();
+            }
         } catch (org.antlr.v4.runtime.RecognitionException e) {
             System.err.println("REC " + e.getMessage()); // input error
         } catch (IOException e) {

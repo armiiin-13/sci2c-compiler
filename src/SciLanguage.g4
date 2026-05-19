@@ -118,11 +118,6 @@ dec_s_paramlist[Header header] : tipo ',' 'INTENT' '(' tipoparam ')' IDENT {
     }';' dec_s_paramlist[$header] | ;
 tipoparam returns [boolean value] : 'IN' {$value = false;}| 'OUT' {$value = true;}| 'INOUT'{$value = true;};
 
-formal_paramlist_dummy : '(' nomparamlist_dummy ')' | ;
-nomparamlist_dummy : IDENT nomparamlist_dummy2;
-nomparamlist_dummy2 : ',' IDENT nomparamlist_dummy2 | ;
-dec_f_paramlist_dummy : tipo ',' 'INTENT' '(' tipoparam ')' IDENT ';' dec_f_paramlist_dummy | ;
-
 decfun returns [Function function]: 'FUNCTION' id1=IDENT {
         $function = new Function(new Header($id1.text), new Body());
     }'(' nomparamlist_init[$function.getHeader()] ')' tipo '::' IDENT {
@@ -241,6 +236,10 @@ actual_params[Header funcHeader, int idx] returns [String code]
     : exp[null] actual_params_tail[funcHeader, idx + 1] {
         String arg = $exp.code;
 
+        if (arg.startsWith("'") && arg.endsWith("'")) {
+            arg = "\"" + arg.substring(1, arg.length() - 1) + "\"";
+        }
+
         if (funcHeader != null
             && funcHeader.getParams().get(idx).isPointer()) {
             arg = "&" + arg;
@@ -252,6 +251,10 @@ actual_params[Header funcHeader, int idx] returns [String code]
 actual_params_tail[Header funcHeader, int idx] returns [String code]
     : ',' exp[null] actual_params_tail[funcHeader, idx + 1] {
         String arg = $exp.code;
+
+        if (arg.startsWith("'") && arg.endsWith("'")) {
+            arg = "\"" + arg.substring(1, arg.length() - 1) + "\"";
+        }
 
         if (funcHeader != null
             && funcHeader.getParams().get(idx).isPointer()) {
@@ -268,8 +271,12 @@ subproglist[Program p] : codproc[$p] subproglist[$p] | codfun[$p] subproglist[$p
 
 codproc[Program p]: 'SUBROUTINE' beginId=IDENT {
     Function func = $p.getFunction($beginId.text);
-    } formal_paramlist_dummy dec_f_paramlist_dummy dcllist[new ArrayList<Constant>(), func.getLocalVariables()] sentlist[$p, null,func.getHeader()] {func.setBlock($sentlist.body);}
-    'END' 'SUBROUTINE' endId=IDENT {
+    if (func == null) {
+        func = new Function(new Header("void", $beginId.text), new Body());
+        $p.getFunctions().add(func);
+    }
+} formal_paramlist[func.getHeader()] dec_s_paramlist[func.getHeader()] dcllist[new ArrayList<Constant>(), func.getLocalVariables()]
+    sentlist[$p, null,func.getHeader()] {func.setBlock($sentlist.body);} 'END' 'SUBROUTINE' endId=IDENT {
         if(!$beginId.text.equals($endId.text)){
             errorManager.addError(
                 $endId.getLine(),
@@ -281,8 +288,15 @@ codproc[Program p]: 'SUBROUTINE' beginId=IDENT {
 
 codfun[Program p] : 'FUNCTION' beginId=IDENT {
         Function func = $p.getFunction($beginId.text);
-    }'(' {Header dummy = new Header("dummy");} nomparamlist_init[dummy] ')' tipo '::' IDENT
-    ';' dec_f_paramlist[dummy] dcllist[new ArrayList<Constant>(), func.getLocalVariables()] sentlist[$p, $beginId.text, func.getHeader()] {
+
+        if (func == null) {
+            func = new Function(new Header($beginId.text), new Body());
+            $p.getFunctions().add(func);
+        }
+    }'(' nomparamlist_init[func.getHeader()] ')' tipo '::' IDENT {
+        func.getHeader().setType($tipo.type);
+    }
+    ';' dec_f_paramlist[func.getHeader()] dcllist[new ArrayList<Constant>(), func.getLocalVariables()] sentlist[$p, $beginId.text, func.getHeader()] {
         func.setBlock($sentlist.body);
     } returnId=IDENT '=' exp[func.getHeader()] {func.getBlock().addSentence(new Sentence("return " + $exp.code + ";"));} ';' 'END' 'FUNCTION' endId=IDENT {
         if(!$beginId.text.equals($endId.text)){
@@ -373,7 +387,7 @@ do_body[Program p, String funcName, Header funcHeader] returns [Sentence s]:
         whileSentence.setWhileBody($sentlist.body);
         $s = whileSentence;
     }
-    | nameVariable=IDENT '=' dStart=doval ',' dEnd=doval (',' dInc=doval)? sentlist[$p, $funcName, $funcHeader] 'ENDDO'{
+    | nameVariable=IDENT '=' dStart=doval ',' dEnd=doval ',' dInc=doval sentlist[$p, $funcName, $funcHeader] 'ENDDO'{
         String inc;
 
         if ($dInc.code != null) {
@@ -445,13 +459,10 @@ NUM_REAL_CONST : SIGN DIGIT DIGIT_2 '.' DIGIT DIGIT_2
                | SIGN DIGIT DIGIT_2 '.' DIGIT DIGIT_2 ('e' | 'E') SIGN DIGIT DIGIT_2
                ;
 
-
 STRING_CONST
     : '\'' STRING_SINGLE_CONTENT '\''
     | '"'  STRING_DOUBLE_CONTENT '"'
     ;
-
-
 
 COMMENTARY : '!' TEXT (EOL | EOF) -> skip;
 
@@ -472,7 +483,6 @@ fragment STRING_SINGLE_CONTENT : '\'\'' STRING_SINGLE_CONTENT | ~['\r\n] STRING_
 fragment STRING_DOUBLE_CONTENT : '""' STRING_DOUBLE_CONTENT | ~["\r\n] STRING_DOUBLE_CONTENT | ;
 
 fragment TEXT : ~[\r\n] TEXT | ;
-//fragment TEXT_LAMBDA : ~[\r\n] | ;
 fragment EOL : '\r' '\n' | '\n';
 
 fragment SINTAX_B : [0-1];

@@ -4,6 +4,8 @@
     import entity.program.*;
     import entity.routine.*;
     import entity.statement.*;
+    import entity.statement.conditional.*;
+    import entity.statement.switchcase.*;
     import entity.util.Tuple;
 
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -161,30 +163,6 @@ public interface SciLanguageVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTipoparam(SciLanguageParser.TipoparamContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SciLanguageParser#formal_paramlist_dummy}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFormal_paramlist_dummy(SciLanguageParser.Formal_paramlist_dummyContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SciLanguageParser#nomparamlist_dummy}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNomparamlist_dummy(SciLanguageParser.Nomparamlist_dummyContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SciLanguageParser#nomparamlist_dummy2}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNomparamlist_dummy2(SciLanguageParser.Nomparamlist_dummy2Context ctx);
-	/**
-	 * Visit a parse tree produced by {@link SciLanguageParser#dec_f_paramlist_dummy}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDec_f_paramlist_dummy(SciLanguageParser.Dec_f_paramlist_dummyContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SciLanguageParser#decfun}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -286,4 +264,94 @@ public interface SciLanguageVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCodfun(SciLanguageParser.CodfunContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#expcond}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpcond(SciLanguageParser.ExpcondContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#expcond2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpcond2(SciLanguageParser.Expcond2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#oplog}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOplog(SciLanguageParser.OplogContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#factorcond}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFactorcond(SciLanguageParser.FactorcondContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#opcomp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOpcomp(SciLanguageParser.OpcompContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#if_then}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIf_then(SciLanguageParser.If_thenContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#then_else}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitThen_else(SciLanguageParser.Then_elseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#do_body}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDo_body(SciLanguageParser.Do_bodyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#doval}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDoval(SciLanguageParser.DovalContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#casos}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCasos(SciLanguageParser.CasosContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#casos2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCasos2(SciLanguageParser.Casos2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#etiquetas}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEtiquetas(SciLanguageParser.EtiquetasContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#etiquetas2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEtiquetas2(SciLanguageParser.Etiquetas2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#etiquetas3}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEtiquetas3(SciLanguageParser.Etiquetas3Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link SciLanguageParser#listaetiquetas}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitListaetiquetas(SciLanguageParser.ListaetiquetasContext ctx);
 }

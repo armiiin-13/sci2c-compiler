@@ -17,6 +17,13 @@ public class ErrorManager {
     }
 
     public void addError(String type, Token token, String message) {
+        if (token == null) {
+            errors.add(
+                    "[" + type + "] Línea ?, columna ?: " + message
+            );
+            return;
+        }
+
         errors.add(
                 "[" + type + "] Línea " + token.getLine() +
                         ", columna " + token.getCharPositionInLine() +
@@ -37,4 +44,7 @@ public class ErrorManager {
     }
 
 
+    public void addError(String error, String message) {
+        errors.add("[" + error + "] " + message);
+    }
 }

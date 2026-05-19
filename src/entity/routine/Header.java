@@ -23,8 +23,10 @@ public class Header{
     }
 
     public void addParam(String name){
-        Parameter newParam = new Parameter(name);
-        this.params.add(newParam);
+        if (!isParameter(name)) {
+            params.add(new Parameter(name));
+        }
+
     }
 
     public Parameter getParam(String name, int line, int column, ErrorManager errorManager){
@@ -33,7 +35,8 @@ public class Header{
                 return param;
             }
         }
-        errorManager.addError(Integer.toString(line), Integer.toString(column), "No ha sido declarado en la cabecera de la subrutina '" + this.name + "'.");
+        errorManager.addError(Integer.toString(line), Integer.toString(column), "El parámetro " + name
+                + " no ha sido declarado en la cabecera de la subrutina '" + this.name + "'.");
         return null;
     }
 

@@ -1,12 +1,16 @@
 package entity.program;
 
+import com.sun.tools.javac.Main;
 import entity.error.ErrorManager;
 import entity.routine.Body;
 import entity.routine.Function;
 import entity.routine.Header;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,7 +95,8 @@ public class Program{
 
         String path = "src/file/output/" + this.name + ".c";
         try{
-            FileWriter writer = new FileWriter(path);
+            File output = new File(getJarDirectory(), path);
+            FileWriter writer = new FileWriter(output);
             for (Constant constant : constants){
                 writer.write("#define " + constant.getName() + " " + constant.getCValue());
                 writer.write("\n");
@@ -117,8 +122,36 @@ public class Program{
             writer.close();
 
         } catch(IOException e){
-            System.out.println("Error al escribir el archivo: " + e.getMessage());
+            System.err.println("Error al escribir el archivo: " + e.getMessage());
+        } catch (URISyntaxException e) {
+            System.err.println("Error al crear el archivo: " + e.getMessage());
         }
+    }
+
+    // Gets JAR path to create the program file
+    private static File getJarDirectory() throws URISyntaxException {
+        try {
+            URI uri = Main.class
+                    .getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .toURI();
+
+            if ("file".equals(uri.getScheme())) {
+                File file = new File(uri);
+
+                if (file.isFile()) {
+                    return file.getParentFile(); // caso jar
+                } else {
+                    return file; // caso IDE / target/classes
+                }
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error al obtener la URI: " + e.getMessage());
+        }
+
+        return new File(System.getProperty("user.dir"));
     }
 
 }
