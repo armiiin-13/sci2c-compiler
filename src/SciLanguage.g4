@@ -199,11 +199,16 @@ factor[Header funcHeader] returns [String code] : simpvalue {
     $code = "(" + $exp.code + ")";
 } | IDENT factor2[funcHeader] {
     String name = $IDENT.text;
-    if ($funcHeader != null && $funcHeader.isParameter($IDENT.text)){
-        Parameter param = $funcHeader.getParam($IDENT.text,$IDENT.getLine(), $IDENT.getCharPositionInLine(), errorManager);
+    $code = name + $factor2.code;
+    if ($funcHeader != null && $funcHeader.isParameter(name)){
+
+        Parameter param = $funcHeader.getParam(name,
+            $IDENT.getLine(), $IDENT.getCharPositionInLine(), errorManager);
+
         if (param != null && param.isPointer() && $factor2.code.equals("")){
             $code = "*" + name;
         }
+
     } else {
         $code = name + $factor2.code;
     }
