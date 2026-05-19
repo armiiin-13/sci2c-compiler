@@ -167,8 +167,11 @@ sent[Program p, String funcName, Header funcHeader] returns [Sentence s] :
 
     } | proc_call[p] ';' {
         $s = new Sentence($proc_call.code + ";");
-    } ;
-    // | 'IF' '(' expcond ')' if_then | 'DO' do_body | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT';
+    }
+    | 'IF' '(' expcond[$funcHeader] ')' if_then[$p, $funcName, $funcHeader, $expcond.code] {
+        $s = $if_then.s;
+    };
+    // | 'DO' do_body | 'SELECT' 'CASE' '(' exp ')' casos 'END' 'SELECT';
 exp[Header funcHeader]  returns [String code] : factor[funcHeader] exp2[funcHeader] {
     $code = $factor.code + $exp2.code;
 };
@@ -285,15 +288,71 @@ codfun[Program p] : 'FUNCTION' beginId=IDENT {
     };
 
 // ------------ GRAMMAR RULES: VOLUNTARY PART ------------
-/*
-expcond : factorcond expcond2 ;
-expcond2 : oplog factorcond expcond2 | ;
-oplog : '.OR.' | '.AND.' | '.EQV.' | '.NEQV.' ;
-factorcond : exp opcomp exp | '(' expcond ')' | '.NOT.' factorcond | '.TRUE.' | '.FALSE.' ; //LL(2)
-opcomp : '<' | '>' | '<=' | '>=' | '==' | '/=' ;
 
-if_then : sent | 'THEN' sentlist then_else;
-then_else : 'ENDIF' | 'ELSE' sentlist 'ENDIF';
+expcond[Header funcHeader] returns [String code] :
+    factorcond[$funcHeader] expcond2[$funcHeader]{
+        $code = $factorcond.code + $expcond2.code;
+    };
+
+expcond2[Header funcHeader] returns [String code] :
+    oplog factorcond[$funcHeader] expcond2[$funcHeader]{
+        $code = " " + $oplog.code + " " + $factorcond.code + $expcond2.code;
+    } | {
+        $code = "";
+    };
+
+
+oplog returns [String code] :
+    '.OR.' {$code = "||";}
+    | '.AND.' {$code = "&&";}
+    | '.EQV.' {$code = "!^";}
+    | '.NEQV.'{$code = "^";}
+    ;
+
+factorcond[Header funcHeader] returns [String code] :
+    exp[$funcHeader] opcomp exp[$funcHeader] {
+        $code = $exp(0).code + " " + $opcomp.code + " " + $exp(1).code;
+    }
+    | '(' expcond[$funcHeader] ')' {
+        $code = "(" + $expcond.code + ")";
+    }
+    | '.NOT.' factorcond[$funcHeader] {
+        $code = "!" + $factorcond.code;
+    }
+    | '.TRUE.' {$code = "1";} | '.FALSE.' {$code = "0";}; //LL(2)
+opcomp returns [String code]
+    : '<'  {$code = "<";}
+    | '>' {$code = ">";}
+    | '<=' {$code = "<=";}
+    | '>=' {$code = ">=";}
+    | '==' {$code = "==";}
+    | '/=' {$code = "!=";};
+
+if_then[Program p, String funcName, Header funcHeader, String condition] returns [Sentence s] :
+    sent[$p, $funcName, $funcHeader] {
+        IfThenElse ifSentence = new IfThenElse($condition);
+        Body ifBody = new Body();
+        ifBody.addSentence($sent.s);
+        ifSentence.setIfBody(ifBody);
+        $s = ifSentence;
+    }
+    | 'THEN' sentlist[$p, $funcName, $funcHeader] then_else[$p, $funcName, $funcHeader, $condition, $sentlist.body]{
+        $s = $then_else.s;
+    };
+
+then_else[Program p, String funcName, Header funcHeader, String condition, Body ifBody] :
+    'ENDIF' {
+        IfThenElse ifSentence = new IfThenElse($condition);
+        ifSentence.setIfBody($ifBody);
+        $s = ifSentence;
+    }
+    | 'ELSE' sentlist[$p, $funcName, $funcHeader] 'ENDIF'{
+        IfThenElse ifSentence = new IfThenElse($condition);
+        ifSentence.setIfBody($ifBody);
+        ifSentence.setElseBody($sentlist.body);
+        $s = ifSentence;
+    };
+
 do_body : 'WHILE' '(' expcond ')' sentlist 'ENDDO' | IDENT '=' doval ',' doval ',' doval sentlist 'ENDDO';
 doval : NUM_INT_CONST | IDENT;
 
@@ -303,7 +362,6 @@ etiquetas :  simpvalue etiquetas2 | ':' simpvalue;
 etiquetas2 : listaetiqetas | ':' etiquetas3;
 etiquetas3 : simpvalue | ;
 listaetiqetas : ',' simpvalue listaetiqetas | ;
-*/
 
 // ------------ GENERAL TOKENS ------------
 IDENT : LETTER IDENT_2 ;
