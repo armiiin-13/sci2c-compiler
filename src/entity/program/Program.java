@@ -93,7 +93,7 @@ public class Program{
         try{
             FileWriter writer = new FileWriter(path);
             for (Constant constant : constants){
-                writer.write("#define " + constant.getName() + " " + constant.getValue());
+                writer.write("#define " + constant.getName() + " " + constant.getCValue());
                 writer.write("\n");
             }
             writer.write("\n");
