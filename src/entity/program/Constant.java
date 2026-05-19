@@ -19,7 +19,7 @@ public class Constant{
         }
 
         if (value.startsWith("o`") && value.endsWith("`")) {
-            return "0" + value.substring(2, value.length() - 1);
+            return "0o" + value.substring(2, value.length() - 1);
         }
 
         if (value.startsWith("z`") && value.endsWith("`")) {
