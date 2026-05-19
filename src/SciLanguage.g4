@@ -445,10 +445,13 @@ NUM_REAL_CONST : SIGN DIGIT DIGIT_2 '.' DIGIT DIGIT_2
                | SIGN DIGIT DIGIT_2 '.' DIGIT DIGIT_2 ('e' | 'E') SIGN DIGIT DIGIT_2
                ;
 
+
 STRING_CONST
- : '\'' ( '\'\'' | ~['\r\n] )* '\''
- | '"'  ( '""'   | ~["\r\n] )* '"'
- ;
+    : '\'' STRING_SINGLE_CONTENT '\''
+    | '"'  STRING_DOUBLE_CONTENT '"'
+    ;
+
+
 
 COMMENTARY : '!' TEXT (EOL | EOF) -> skip;
 
@@ -464,8 +467,10 @@ fragment DIGIT_2: DIGIT DIGIT_2 | ;
 fragment LETTER : [a-zA-Z];
 fragment DIGIT : [0-9];
 fragment SIGN : '-' | ;
-//fragment STRING_SIMPLE : (~[\n\r] | '\'\'') STRING_SIMPLE | ;
-//fragment STRING_DOUBLE : (~[\n\r] | '""') STRING_DOUBLE | ;
+
+fragment STRING_SINGLE_CONTENT : '\'\'' STRING_SINGLE_CONTENT | ~['\r\n] STRING_SINGLE_CONTENT | ;
+fragment STRING_DOUBLE_CONTENT : '""' STRING_DOUBLE_CONTENT | ~["\r\n] STRING_DOUBLE_CONTENT | ;
+
 fragment TEXT : ~[\r\n] TEXT | ;
 //fragment TEXT_LAMBDA : ~[\r\n] | ;
 fragment EOL : '\r' '\n' | '\n';
@@ -476,3 +481,4 @@ fragment SINTAX_H : [A-F0-9];
 fragment DIGIT_B : SINTAX_B DIGIT_B | ;
 fragment DIGIT_O : SINTAX_O DIGIT_O | ;
 fragment DIGIT_H : SINTAX_H DIGIT_H | ;
+
