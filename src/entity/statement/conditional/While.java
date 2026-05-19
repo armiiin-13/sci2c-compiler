@@ -23,7 +23,7 @@ public class While extends Sentence {
     @Override
     public String toString(String indent){
         StringBuilder sb = new StringBuilder();
-        sb.append(indent).append("while(").append(this.getSentence()).append("){\n");
+        sb.append(indent).append("while (").append(this.getSentence()).append("){\n");
         String doubleIndent = indent + "\t";
         sb.append(this.whileBody.toString(doubleIndent));
         sb.append(indent).append("}");

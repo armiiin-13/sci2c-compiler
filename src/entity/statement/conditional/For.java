@@ -61,7 +61,7 @@ public class For extends Sentence {
     @Override
     public String toString(String indent){
         StringBuilder sb = new StringBuilder();
-        sb.append(indent).append("for(").append(this.nameVariable).append("=").append(this.initValue).append(" ; ");
+        sb.append(indent).append("for (").append(this.nameVariable).append("=").append(this.initValue).append(" ; ");
         sb.append(this.nameVariable).append("!=").append(this.endValue).append(" ; ");
         sb.append(this.nameVariable).append("=").append(this.nameVariable).append("+").append(this.increment).append("){\n");
         String doubleIndent = indent + "\t";
