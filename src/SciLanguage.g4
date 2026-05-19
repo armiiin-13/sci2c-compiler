@@ -6,6 +6,8 @@ grammar SciLanguage;
     import entity.program.*;
     import entity.routine.*;
     import entity.statement.*;
+    import entity.statement.conditional.*;
+    import entity.statement.switchcase.*;
     import entity.util.Tuple;
 }
 
@@ -175,7 +177,7 @@ sent[Program p, String funcName, Header funcHeader] returns [Sentence s] locals 
     | 'SELECT' 'CASE' '(' exp[$funcHeader] ')' {
         Switch switchSentence = new Switch($exp.code);
     }casos[$p, $funcName, $funcHeader, $switchSentence] 'END' 'SELECT'{
-        s = switchSentence;
+        $s = switchSentence;
     };
 exp[Header funcHeader]  returns [String code] : factor[funcHeader] exp2[funcHeader] {
     $code = $factor.code + $exp2.code;
@@ -345,7 +347,7 @@ if_then[Program p, String funcName, Header funcHeader, String condition] returns
         $s = $then_else.s;
     };
 
-then_else[Program p, String funcName, Header funcHeader, String condition, Body ifBody] returns [Sentece s]:
+then_else[Program p, String funcName, Header funcHeader, String condition, Body ifBody] returns [Sentence s]:
     'ENDIF' {
         IfThenElse ifSentence = new IfThenElse($condition);
         ifSentence.setIfBody($ifBody);
@@ -374,11 +376,11 @@ do_body[Program p, String funcName, Header funcHeader] returns [Sentence s]:
         }
 
 
-        For forSentence = new For($nameVariable.text, dStart, dEnd, inc);
-        forSentence.setBody($sentlist.body);
+        For forSentence = new For($nameVariable.text, $dStart.text, $dEnd.text, inc);
+        forSentence.setForBody($sentlist.body);
         $s = forSentence;
     };
-doval returns [String code] : NUM_INT_CONST {$code = $NUM_INT_CONST.text} | IDENT {$code = $IDENT.text};
+doval returns [String code] : NUM_INT_CONST {$code = $NUM_INT_CONST.text;} | IDENT {$code = $IDENT.text;};
 
 casos[Program p, String funcName, Header funcHeader, Switch switchSentence] :
     'CASE' casos2[$p, $funcName, $funcHeader, $switchSentence] {
