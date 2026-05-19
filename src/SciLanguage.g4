@@ -399,7 +399,7 @@ casos2[Program p, String funcName, Header funcHeader, Switch switchSentence] :
     };
 
 etiquetas returns [String code]: simpvalue etiquetas2 {
-        if ($etiquetas2.code.equals(" to_empty")) {
+        if ($etiquetas2.code.equals("to_empty")) {
             $code = "case > " + $simpvalue.value;
         } else {
             $code = "case " + $simpvalue.value + $etiquetas2.code;
@@ -426,7 +426,7 @@ etiquetas3 returns [String code] : simpvalue {
         $code = "";
     };
 listaetiquetas returns [String code] : ',' simpvalue listaetiquetas {
-        $code = " , case " + $simpvalue.value + $listaetiquetas.code;
+        $code = " ," + $simpvalue.value + $listaetiquetas.code;
     }
     | {
         $code = "";

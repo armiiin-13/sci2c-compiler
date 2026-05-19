@@ -38,7 +38,7 @@ public class SwitchCase {
         for (String switchCase: cases){
             sb.append(indent).append(switchCase).append(":\n");
         }
-        String doubleIndent = indent + "  ";
+        String doubleIndent = indent + "\t";
         sb.append(this.body.toString(doubleIndent));
         return sb.toString();
     }

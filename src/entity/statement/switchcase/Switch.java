@@ -47,14 +47,14 @@ public class Switch extends Sentence {
     public String toString(String indent){
         StringBuilder sb = new StringBuilder();
         sb.append(indent).append("switch(").append(this.getSentence()).append("){\n");
-        String doubleIndent = indent + "  ";
+        String doubleIndent = indent + "\t";
         for (SwitchCase switchCase: this.cases){
             sb.append(switchCase.toString(doubleIndent));
-            sb.append(doubleIndent).append("\n  ").append("break;\n");
+            sb.append(doubleIndent).append("\t").append("break;\n");
         }
         if (! this.defaultCase.getBody().getSentences().isEmpty()){
-            sb.append(indent).append("default:\n");
-            sb.append(this.defaultCase.getBody().toString(doubleIndent + "  "));
+            sb.append(doubleIndent).append("default:\n");
+            sb.append(this.defaultCase.getBody().toString(doubleIndent + "\t"));
         }
         sb.append(indent).append("}");
         return sb.toString();
