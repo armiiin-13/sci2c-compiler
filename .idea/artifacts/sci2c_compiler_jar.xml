@@ -3,9 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/sci2c_compiler_jar</output-path>
     <root id="archive" name="sci2c-compiler.jar">
       <element id="module-output" name="sci2c-compiler" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/antlr-4.13.2-complete.jar" path-in-jar="/" />
-      <element id="library" level="project" name="antlr4-runtime-4.13.2" />
-      <element id="library" level="project" name="antlr-4.13.2-complete" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/antlr4-runtime-4.13.2.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
