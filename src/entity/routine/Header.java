@@ -1,7 +1,6 @@
 package entity.routine;
 
 import entity.error.ErrorManager;
-import entity.error.SemanticException;
 
 import java.util.ArrayList;
 

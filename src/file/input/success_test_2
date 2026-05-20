@@ -1,0 +1,24 @@
+PROGRAM PowerControl;
+
+! Configuration constants
+REAL, PARAMETER :: BASE_VOLTAGE = 220.0;
+INTEGER :: status_code = 1;
+
+INTERFACE
+    ! Subroutine to update system status
+    SUBROUTINE update_status(code)
+        INTEGER, INTENT(INOUT) code;
+    END SUBROUTINE update_status
+END INTERFACE
+
+! Main execution logic
+status_code = status_code + 5;
+CALL update_status(status_code);
+
+END PROGRAM PowerControl
+
+! Implementation of the status update
+SUBROUTINE update_status(code)
+    INTEGER, INTENT(INOUT) code;
+    code = code + 1;
+END SUBROUTINE update_status

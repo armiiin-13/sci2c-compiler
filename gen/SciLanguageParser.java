@@ -4453,9 +4453,9 @@ public class SciLanguageParser extends Parser {
 				((EtiquetasContext)_localctx).etiquetas2 = etiquetas2();
 
 				        if (((EtiquetasContext)_localctx).etiquetas2.code.equals("to_empty")) {
-				            ((EtiquetasContext)_localctx).code =  "case > " + ((EtiquetasContext)_localctx).simpvalue.value;
+				            ((EtiquetasContext)_localctx).code =  "> " + ((EtiquetasContext)_localctx).simpvalue.value;
 				        } else {
-				            ((EtiquetasContext)_localctx).code =  "case " + ((EtiquetasContext)_localctx).simpvalue.value + ((EtiquetasContext)_localctx).etiquetas2.code;
+				            ((EtiquetasContext)_localctx).code =  ((EtiquetasContext)_localctx).simpvalue.value + ((EtiquetasContext)_localctx).etiquetas2.code;
 				        }
 				    
 				}
@@ -4468,7 +4468,7 @@ public class SciLanguageParser extends Parser {
 				setState(615);
 				((EtiquetasContext)_localctx).simpvalue = simpvalue();
 
-				        ((EtiquetasContext)_localctx).code =  "case < " + ((EtiquetasContext)_localctx).simpvalue.value;
+				        ((EtiquetasContext)_localctx).code =  "< " + ((EtiquetasContext)_localctx).simpvalue.value;
 				    
 				}
 				break;

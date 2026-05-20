@@ -34,9 +34,9 @@ public class SwitchCase {
 
     public String toString(String indent){
         StringBuilder sb = new StringBuilder();
-        String[] cases = this.value.split(" , ");
+        String[] cases = this.value.split(",");
         for (String switchCase: cases){
-            sb.append(indent).append(switchCase).append(":\n");
+            sb.append(indent).append("case ").append(switchCase.replaceAll(" +$", "")).append(":\n");
         }
         String doubleIndent = indent + "\t";
         sb.append(this.body.toString(doubleIndent));

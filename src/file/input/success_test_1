@@ -25,12 +25,13 @@ texto = "result";
 
 END SUBROUTINE print
 
-FUNCTION sum(n, m) INTEGER :: res;
+FUNCTION sum(n, m)
+INTEGER :: sum;
 INTEGER, INTENT(IN) n;
 INTEGER, INTENT(IN) m;
 INTEGER :: temp;
 
 temp = n + m;
-res = temp;
+sum = temp;
 
 END FUNCTION sum
