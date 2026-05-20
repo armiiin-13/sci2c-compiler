@@ -93,7 +93,7 @@ public class Program{
             return;
         }
 
-        String path = "src/file/output/" + this.name + ".c";
+        String path = this.name + ".c";
         try{
             File output = new File(getJarDirectory(), path);
             FileWriter writer = new FileWriter(output);
