@@ -1,0 +1,36 @@
+PROGRAM NetworkManager;
+
+CHARACTER(12) :: status = "IDLE";
+INTEGER :: connections = 0, totalConnections;
+
+INTERFACE
+    SUBROUTINE connect_device(count)
+        INTEGER, INTENT(INOUT) count;
+    END SUBROUTINE connect
+
+    FUNCTION get_total_connections(current)
+        INTEGER :: get_total_connections;
+        INTEGER, INTENT(IN) current;
+    END FUNCTION get_total_connections
+
+END INTERFACE
+
+connections = connections + 1;
+status = "CONNECTED";
+CALL connect_device(connections);
+totalConnections = get_total_connections(connections);
+
+END PROGRAM NetworkManager
+
+SUBROUTINE connect_device(count)
+    INTEGER, INTENT(INOUT) count;
+    count = count + 1;
+END SUBROUTINE connect_device
+
+FUNCTION get_total_connections(current)
+    INTEGER :: get_total_connections;
+    INTEGER, INTENT(IN) current;
+
+    INTEGER :: total;
+    total = current + 1;
+END FUNCTION get_total_connections

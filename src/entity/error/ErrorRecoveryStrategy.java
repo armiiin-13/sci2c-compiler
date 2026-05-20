@@ -2,7 +2,7 @@ package entity.error;
 
 import org.antlr.v4.runtime.*;
 
-public class ErrorRecuperationStrategy extends DefaultErrorStrategy {
+public class ErrorRecoveryStrategy extends DefaultErrorStrategy {
 
     @Override
     public void recover(Parser recognizer, RecognitionException e) {

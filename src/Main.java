@@ -2,7 +2,7 @@ import java.io.*;
 
 import entity.error.ErrorListener;
 import entity.error.ErrorManager;
-import entity.error.ErrorRecuperationStrategy;
+import entity.error.ErrorRecoveryStrategy;
 import org.antlr.v4.gui.Trees;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -25,13 +25,12 @@ public class Main {
             analex.addErrorListener(listener);
             anasint.addErrorListener(listener);
             anasint.setErrorManager(errorManager);
-            anasint.setErrorHandler(new ErrorRecuperationStrategy());
+            anasint.setErrorHandler(new ErrorRecoveryStrategy());
 
 
 
             try {
-                ParseTree tree = anasint.prg();
-                Trees.inspect(tree, anasint);
+                anasint.prg();
             } catch (Exception e) {
                 errorManager.addError("ERROR SINTÁCTICO",
                         "El programa contiene una construcción no válida. Revisa comillas, paréntesis, " +
